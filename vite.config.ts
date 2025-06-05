@@ -12,11 +12,14 @@ export default defineConfig({
     },
   },
   server: {
+    host: "localhost",
+    port: 5173,
     proxy: {
       "/api": {
         target: "http://135.125.153.103:8080",
         changeOrigin: true,
         secure: false,
+        rewrite: (path) => path.replace(/^\/api/, "/api"),
       },
     },
   },

@@ -36,6 +36,7 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 export const AddLocationDialog = () => {
+  const [open, setOpen] = useState(false);
   const [coordinates, setCoordinates] = useState<{
     longitude: number;
     latitude: number;
@@ -54,43 +55,55 @@ export const AddLocationDialog = () => {
 
   const { isSubmitting } = form.formState;
 
-  const handleCreateLocation = async (data: CreateLocation) => {
-    await createLocationAsync(data);
-  };
-
-  const onSubmit = (values: FormData) => {
-    fromAddress(values.address)
-      .then(({ results }) => {
-        const { lat, lng } = results[0].geometry.location;
-        console.log(lat, lng);
-        setCoordinates({
-          longitude: lng,
-          latitude: lat,
-        });
-      })
-      .catch(console.error);
-
-    const createLocationData: CreateLocation = {
-      name: values.name,
-      address: values.address,
-      longitude: coordinates.longitude,
-      latitude: coordinates.latitude,
-    };
-
-    handleCreateLocation(createLocationData);
-
+  useState(() => {
     setDefaults({
       key: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
       language: "pl",
       region: "pl",
       outputFormat: OutputFormat.JSON,
     });
+  });
+
+  const handleCreateLocation = async (data: CreateLocation) => {
+    await createLocationAsync(data);
+  };
+
+  const onSubmit = async (values: FormData) => {
+    try {
+      const response = await fromAddress(values.address);
+      const { lat, lng } = response.results[0].geometry.location;
+      console.log(lat, lng);
+
+      const newCoordinates = {
+        longitude: lng,
+        latitude: lat,
+      };
+      setCoordinates(newCoordinates);
+
+      const createLocationData: CreateLocation = {
+        name: values.name,
+        address: values.address,
+        longitude: newCoordinates.longitude,
+        latitude: newCoordinates.latitude,
+      };
+
+      await handleCreateLocation(createLocationData);
+
+      // Success - close dialog and reset form
+      setOpen(false);
+      form.reset();
+    } catch (error) {
+      console.error(error);
+      // Error - close dialog and reset form
+      setOpen(false);
+      form.reset();
+    }
   };
 
   console.log(import.meta.env.VITE_GOOGLE_MAPS_API_KEY);
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline">Dodaj lokalizację</Button>
       </DialogTrigger>
