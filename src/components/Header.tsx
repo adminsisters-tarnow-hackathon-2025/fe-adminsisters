@@ -11,7 +11,7 @@ export const Header = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <Link to={RouterUrlEnum.HOME} className="text-lg font-semibold">
-              Nadchodzące wydarzenia
+              Life in Tarnów
             </Link>
             <div className="flex space-x-2">
               <Button variant="ghost" asChild>

@@ -1,3 +1,4 @@
+import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { LoginDialog } from "@/components/LoginDialog";
 import { ThemeProvider } from "@/components/ThemeProvider";
@@ -24,6 +25,9 @@ export default function RootLayout() {
 
           <Outlet />
         </main>
+        <div className="sticky bottom-0 z-50 bg-background">
+          <Footer />
+        </div>
       </div>
     </ThemeProvider>
   );
