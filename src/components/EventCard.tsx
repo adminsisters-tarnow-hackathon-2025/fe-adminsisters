@@ -8,10 +8,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Clock, Heart, MapPin, Wallet } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button } from "./ui/button";
+import { Event } from "@/api/events/types";
 
-export const EventCard = () => {
+export const EventCard: React.FC<{ event: Event }> = ({ event }) => {
   const [isLiked, setIsLiked] = useState(false);
 
   const toggleLike = () => {
@@ -25,31 +26,33 @@ export const EventCard = () => {
           ratio={2 / 1}
           className="bg-muted rounded-md overflow-hidden mx-6"
         >
-          <img src="/src/assets/event.png" />
+          <img src={event.image ? event.image : "/src/assets/event.png"} />
         </AspectRatio>
         <CardHeader className="space-y-2">
-          <CardTitle>Festyn w Waligórze</CardTitle>
+          <CardTitle>{event.name}</CardTitle>
           <CardDescription>
             <div className=" border rounded-md p-2  gap-2 flex flex-col [&>div]:flex [&>div]:items-center  [&>div]:gap-4 ">
-              <div>
-                <MapPin className="size-4" />
-                Waligóra 21
+              <div className="text-secondary-foreground">
+                <MapPin className="size-4 text-primary" />
+                {event.location.name}, {event.location.address}
               </div>
-              <div>
-                <Clock className="size-4" />
-                12.08.2023, 14:00
+              <div className="text-secondary-foreground">
+                <Clock className="size-4 text-primary" />
+                <div className="flex flex-col">
+                  {event.dateFrom && <span>od: {event.dateFrom}</span>}
+                  {event.dateTo && <span>do: {event.dateTo}</span>}
+                </div>
               </div>
-              <div>
-                <Wallet className="size-4" />
-                Wstęp płatny
+              <div className="text-secondary-foreground">
+                <Wallet className="size-4 text-primary" />
+                {event.price > 0 ? "Wstęp płatny" : "Wstęp wolny"}
               </div>
             </div>
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="text-muted-foreground text-sm">
-            Zaloguj się na swoje konto, aby uzyskać dostęp do pełnego zakresu
-            dostępnych funkcji dostępnych tylko dla zalogowanych użytkowników.
+            {event.longDescription}
           </div>
         </CardContent>
         <CardFooter className="flex justify-between items-center w-full gap-4">
