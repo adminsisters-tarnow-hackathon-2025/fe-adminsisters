@@ -79,8 +79,8 @@ const events: Event[] = [
     price: 30,
     coinReward: 80,
     image: "/src/assets/event.png",
-    dateFrom: "2023-10-10T10:00:00Z",
-    dateTo: "2023-10-10T18:00:00Z",
+    dateFrom: "2025-10-10T10:00:00Z",
+    dateTo: "2025-10-10T18:00:00Z",
     location: {
       id: "5",
       name: "Galeria Moderna",
@@ -89,15 +89,15 @@ const events: Event[] = [
   },
   {
     id: "6",
-    name: "Konferencja Tech Summit",
+    name: "Konferencja Tech Summit Konferencja Tech Summi Tech Summi",
     shortDescription: "Przyszłość technologii w jednym miejscu.",
     longDescription:
       "Spotkanie z liderami branży technologicznej. Prezentacje, panele dyskusyjne i networking z ekspertami IT.",
     price: 300,
     coinReward: 400,
     image: "/src/assets/event.png",
-    dateFrom: "2023-10-20T09:00:00Z",
-    dateTo: "2023-10-20T17:00:00Z",
+    dateFrom: "2025-06-05T09:00:00Z",
+    dateTo: "2025-06-05T17:00:00Z",
     location: {
       id: "6",
       name: "Centrum Konferencyjne",

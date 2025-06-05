@@ -1,3 +1,4 @@
+import { Event } from "@/api/events/types";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import {
   Card,
@@ -9,8 +10,18 @@ import {
 } from "@/components/ui/card";
 import { Clock, Heart, MapPin, Wallet } from "lucide-react";
 import React, { useState } from "react";
+import { EventStatusBadge } from "./EventStatusBadge";
 import { Button } from "./ui/button";
-import { Event } from "@/api/events/types";
+
+const getEventStatus = (event: Event) => {
+  const now = new Date();
+  const dateFrom = event.dateFrom ? new Date(event.dateFrom) : null;
+  const dateTo = event.dateTo ? new Date(event.dateTo) : null;
+
+  if (dateTo && now > dateTo) return "ended";
+  if (dateFrom && now >= dateFrom) return "ongoing";
+  return "planned";
+};
 
 export const EventCard: React.FC<{ event: Event }> = ({ event }) => {
   const [isLiked, setIsLiked] = useState(false);
@@ -29,7 +40,10 @@ export const EventCard: React.FC<{ event: Event }> = ({ event }) => {
           <img src={event.image ? event.image : "/src/assets/event.png"} />
         </AspectRatio>
         <CardHeader className="space-y-2">
-          <CardTitle>{event.name}</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <EventStatusBadge status={getEventStatus(event)} />
+            {event.name}
+          </CardTitle>
           <CardDescription>
             <div className=" border rounded-md p-2  gap-2 flex flex-col [&>div]:flex [&>div]:items-center  [&>div]:gap-4 ">
               <div className="text-secondary-foreground">
