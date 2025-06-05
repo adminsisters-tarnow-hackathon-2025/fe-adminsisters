@@ -2,6 +2,9 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { login } from "@/store/userSlice";
+import { useDispatch } from "react-redux";
+import { useState } from "react";
 
 interface LoginDialogProps {
   open: boolean;
@@ -12,13 +15,38 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
   open,
   onOpenChange,
 }) => {
+  const dispatch = useDispatch();
+  const [formData, setFormData] = useState({
+    name: "",
+    password: "",
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const userData = {
+      id: "1",
+      name: formData.name,
+      password: formData.password,
+      coinAmount: 432,
+    };
+
+    dispatch(login(userData));
+    setFormData({ name: "", password: "" });
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      {/* <DialogTrigger asChild>
-        <Button>Log in</Button>
-      </DialogTrigger> */}
       <DialogContent className="sm:max-w-[425px]">
-        <form className="">
+        <form onSubmit={handleSubmit}>
           <div className="flex flex-col gap-6">
             <div className="flex flex-col items-center text-center">
               <h1 className="text-2xl font-bold">Witamy ponownie</h1>
@@ -27,11 +55,14 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
               </p>
             </div>
             <div className="grid gap-3">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="name">Nazwa użytkownika</Label>
               <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
+                id="name"
+                name="name"
+                type="text"
+                placeholder="Wprowadź nazwę użytkownika"
+                value={formData.name}
+                onChange={handleInputChange}
                 required
               />
             </div>
@@ -45,7 +76,14 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
                   Zapomniałeś hasła?
                 </a>
               </div>
-              <Input id="password" type="password" required />
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                required
+              />
             </div>
             <Button type="submit" className="w-full">
               Zaloguj się
