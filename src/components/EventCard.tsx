@@ -8,6 +8,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { selectIsLoggedIn, checkAuthAndPromptLogin } from "@/store/userSlice";
+import { useSelector, useDispatch } from "react-redux";
 import { Clock, Heart, MapPin, Wallet } from "lucide-react";
 import React, { useState } from "react";
 import { EventStatusBadge } from "./EventStatusBadge";
@@ -25,8 +27,14 @@ const getEventStatus = (event: Event) => {
 
 export const EventCard: React.FC<{ event: Event }> = ({ event }) => {
   const [isLiked, setIsLiked] = useState(false);
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector(selectIsLoggedIn);
 
   const toggleLike = () => {
+    if (!isLoggedIn) {
+      dispatch(checkAuthAndPromptLogin());
+      return;
+    }
     setIsLiked(!isLiked);
   };
 
@@ -74,7 +82,7 @@ export const EventCard: React.FC<{ event: Event }> = ({ event }) => {
             fill={isLiked ? "var(--destructive)" : "none"}
             className={`${
               isLiked ? "text-destructive" : "text-muted-foreground"
-            }`}
+            } cursor-pointer`}
             onClick={toggleLike}
           />
           <Button className="flex-1">Zobacz szczegóły</Button>
