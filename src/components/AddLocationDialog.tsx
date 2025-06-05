@@ -1,20 +1,6 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { fromAddress, OutputFormat, setDefaults } from "react-geocode";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "./ui/input";
 import { createLocationAsync } from "@/api/locations";
 import { CreateLocation } from "@/api/locations/types";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -23,6 +9,20 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { fromAddress, OutputFormat, setDefaults } from "react-geocode";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Input } from "./ui/input";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -35,7 +35,13 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
-export const AddLocationDialog = () => {
+interface AddLocationDialogProps {
+  onLocationAdded?: () => void;
+}
+
+export const AddLocationDialog = ({
+  onLocationAdded,
+}: AddLocationDialogProps) => {
   const [open, setOpen] = useState(false);
   const [coordinates, setCoordinates] = useState<{
     longitude: number;
@@ -89,23 +95,25 @@ export const AddLocationDialog = () => {
 
       await handleCreateLocation(createLocationData);
 
-      // Success - close dialog and reset form
       setOpen(false);
       form.reset();
+      onLocationAdded?.();
     } catch (error) {
       console.error(error);
-      // Error - close dialog and reset form
       setOpen(false);
       form.reset();
     }
   };
 
-  console.log(import.meta.env.VITE_GOOGLE_MAPS_API_KEY);
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Dodaj lokalizację</Button>
+        <Button
+          variant="outline"
+          className="border-green-500/50! text-green-500/50"
+        >
+          Dodaj lokalizację
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

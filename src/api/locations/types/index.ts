@@ -4,3 +4,9 @@ export interface CreateLocation {
   longitude: number;
   latitude: number;
 }
+
+export interface Location {
+  id: string;
+  name: string;
+  address: string;
+}
