@@ -1,6 +1,5 @@
 import { Event } from "@/api/events/types";
 import { EventCard } from "@/components/EventCard";
-import { Badge } from "@/components/ui/badge";
 
 const events: Event[] = [
   {
@@ -108,8 +107,18 @@ const events: Event[] = [
 ];
 
 export default function Home() {
+  // const [users, setUsers] = useState<User[]>([]);
+
+  // useEffect(() => {
+  //   const fetchUsers = async () => {
+  //     const response = await getUsersAsync();
+  //     setUsers(response?.data || []);
+  //   };
+  //   fetchUsers();
+  // }, []);
   return (
     <>
+      {/* <pre>{users.toString()}</pre> */}
       <div className="space-y-6">
         {events.map((event, i) => (
           <EventCard event={event} key={i} />

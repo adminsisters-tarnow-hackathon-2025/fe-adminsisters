@@ -83,6 +83,7 @@ export const MapComponent = () => {
         attribution={attribution}
         pointColor={pointColor}
         initialBounds={initialBounds}
+        pointShape="ring"
         data={points}
       />
     </div>

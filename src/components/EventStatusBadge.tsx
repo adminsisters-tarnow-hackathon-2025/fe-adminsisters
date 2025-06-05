@@ -27,12 +27,12 @@ export const EventStatusBadge: React.FC<EventStatusBadgeProps> = ({
       case "ended":
         return {
           text: "Zakończony",
-          dotColor: "bg-gray-500",
+          dotColor: "bg-muted-foreground",
         };
       default:
         return {
           text: status,
-          dotColor: "bg-gray-500",
+          dotColor: "bg-muted-foreground",
         };
     }
   };
