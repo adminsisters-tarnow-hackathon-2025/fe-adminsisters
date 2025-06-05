@@ -7,7 +7,7 @@ export interface Event {
   coinReward: number;
   image: string;
   dateFrom: string;
-  dateTo?: string;
+  dateTo: string;
   location: EventLocation;
 }
 
