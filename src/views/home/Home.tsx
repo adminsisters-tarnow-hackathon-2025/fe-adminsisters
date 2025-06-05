@@ -1,5 +1,6 @@
 import { Event } from "@/api/events/types";
 import { EventCard } from "@/components/EventCard";
+import { Badge } from "@/components/ui/badge";
 
 const events: Event[] = [
   {
@@ -108,10 +109,12 @@ const events: Event[] = [
 
 export default function Home() {
   return (
-    <div className="space-y-6">
-      {events.map((event, i) => (
-        <EventCard event={event} key={i} />
-      ))}
-    </div>
+    <>
+      <div className="space-y-6">
+        {events.map((event, i) => (
+          <EventCard event={event} key={i} />
+        ))}
+      </div>
+    </>
   );
 }
