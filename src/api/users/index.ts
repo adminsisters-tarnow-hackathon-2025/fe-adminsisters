@@ -1,10 +1,10 @@
 import { axiosRequest } from "@/hooks/useAxios";
-import { API_PATH } from "../utils";
+import { ResultObject } from "@/types/models";
 import { User } from "./types";
 
 export async function getUsersAsync() {
-  return axiosRequest<void, User[]>({
-    url: `${API_PATH}/users`,
+  return axiosRequest<void, ResultObject<User[]>>({
+    url: "api/users",
     method: "GET",
     defaultErrorMessage: "Failed to fetch users",
   });
