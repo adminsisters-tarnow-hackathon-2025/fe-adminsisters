@@ -5,8 +5,15 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import { FormInput } from "./form-inputs/FormInput";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "./ui/input";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -33,13 +40,7 @@ export const TestForm = () => {
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <FormInput
-            control={form.control}
-            name="username"
-            placeholder="Enter your username"
-            label="Username"
-          />
-          {/* <FormField
+          <FormField
             control={form.control}
             name="username"
             render={({ field }) => (
@@ -51,7 +52,7 @@ export const TestForm = () => {
                 <FormMessage />
               </FormItem>
             )}
-          /> */}
+          />
           <Button type="submit" disabled={form.formState.isSubmitting}>
             {isSubmitting ? "Submitting..." : "Submit"}
           </Button>

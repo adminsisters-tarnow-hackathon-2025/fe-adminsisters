@@ -3,7 +3,7 @@ import { ResultObject } from "@/types/models";
 import { User } from "./types";
 
 export async function getUsersAsync() {
-  return axiosRequest<void, ResultObject<User[]>>({
+  return axiosRequest<ResultObject<User[]>, void>({
     url: "api/users",
     method: "GET",
     defaultErrorMessage: "Failed to fetch users",

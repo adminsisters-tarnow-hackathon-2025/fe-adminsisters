@@ -1,8 +1,5 @@
 import { Event } from "@/api/events/types";
-import { getUsersAsync } from "@/api/users";
-import { User } from "@/api/users/types";
 import { EventCard } from "@/components/EventCard";
-import { useEffect, useState } from "react";
 
 const events: Event[] = [
   {
@@ -110,23 +107,20 @@ const events: Event[] = [
 ];
 
 export default function Home() {
-  const [users, setUsers] = useState<User[]>([]);
+  // const [users, setUsers] = useState<User[]>([]);
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      const response = await getUsersAsync();
-      setUsers(response?.data || []);
-    };
-    fetchUsers();
-  }, []);
+  // useEffect(() => {
+  //   const fetchUsers = async () => {
+  //     const response = await getUsersAsync();
+  //     if (response?.data?.data) {
+  //       setUsers(response.data.data);
+  //     }
+  //   };
+  //   fetchUsers();
+  // }, []);
+
   return (
     <>
-      {users.map((user, i) => (
-        <div key={i}>
-          <h2>{user.name}</h2>
-          <p>{user.coinAmount}</p>
-        </div>
-      ))}
       <div className="space-y-6">
         {events.map((event, i) => (
           <EventCard event={event} key={i} />
