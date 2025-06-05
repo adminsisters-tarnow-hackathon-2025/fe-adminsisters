@@ -16,16 +16,15 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-      <div className="min-h-screen bg-background relative">
+      <div className="min-h-screen bg-background relative flex flex-col">
         <div className="sticky top-0 z-50 bg-background ">
           <Header />
         </div>
-        <main className=" mx-auto p-4 relative">
+        <main className="flex-1  p-4  ">
           <LoginDialog open={openLoginDialog} onOpenChange={handleOpenChange} />
-
           <Outlet />
         </main>
-        <div className="sticky bottom-0 z-50 bg-background">
+        <div className="sticky bottom-0 w-full z-50 bg-background mt-auto">
           <Footer />
         </div>
       </div>

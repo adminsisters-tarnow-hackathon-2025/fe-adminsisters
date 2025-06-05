@@ -3,6 +3,7 @@ import { RouterUrlEnum } from "@/types/enums/RouterUrlEnum";
 import Home from "@/views/home/Home";
 import { Map } from "@/views/map/Map";
 import NotFound from "@/views/not-found/NotFound";
+import { Profile } from "@/views/profile/Profile";
 import { createBrowserRouter, RouterProvider } from "react-router";
 
 const router = createBrowserRouter([
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
       {
         path: RouterUrlEnum.MAP,
         element: <Map />,
+      },
+      {
+        path: RouterUrlEnum.PROFILE,
+        element: <Profile />,
       },
     ],
   },

@@ -97,7 +97,7 @@ const events: Event[] = [
     coinReward: 400,
     image: "/src/assets/event.png",
     dateFrom: "2025-06-05T09:00:00Z",
-    dateTo: "2025-06-05T17:00:00Z",
+    dateTo: "2025-06-05T23:00:00Z",
     location: {
       id: "6",
       name: "Centrum Konferencyjne",

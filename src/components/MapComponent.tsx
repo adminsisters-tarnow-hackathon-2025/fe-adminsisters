@@ -85,6 +85,7 @@ export const MapComponent = () => {
         initialBounds={initialBounds}
         pointShape="ring"
         data={points}
+        onMapClick={(event) => console.log(event)}
       />
     </div>
   );
