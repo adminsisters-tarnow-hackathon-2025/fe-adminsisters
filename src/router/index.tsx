@@ -1,3 +1,4 @@
+import { AddLocationDialog } from "@/components/AddLocationDialog";
 import RootLayout from "@/layouts/RootLayout";
 import { RouterUrlEnum } from "@/types/enums/RouterUrlEnum";
 import Home from "@/views/home/Home";
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
       {
         path: RouterUrlEnum.PROFILE,
         element: <Profile />,
+      },
+      {
+        path: RouterUrlEnum.TEMP,
+        element: <AddLocationDialog />,
       },
     ],
   },
