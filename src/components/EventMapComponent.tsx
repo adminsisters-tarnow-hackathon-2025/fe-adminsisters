@@ -2,6 +2,7 @@ import { useTheme } from "@/hooks/useTheme";
 import { Event } from "@/api/events/types";
 import { VisLeafletMap } from "@unovis/react";
 import { useMemo, useState } from "react";
+import { LeafletMap, LeafletMapPoint, Tooltip } from "@unovis/ts";
 
 type Bounds = {
   northEast: { lat: number; lng: number };
@@ -77,10 +78,10 @@ export const EventMapComponent = ({
   }, [events]);
 
   const bounds = useMemo(() => {
-    if (showSingleEvent && events && events.length === 1) {
-      const event = events[0];
-      const lat = parseFloat(event.location.latitude?.toString() || "50.05");
-      const lng = parseFloat(event.location.longitude?.toString() || "20.95");
+    if (mapData && mapData.length > 0) {
+      const firstEvent = mapData[0];
+      const lat = firstEvent.latitude;
+      const lng = firstEvent.longitude;
       const offset = 0.01;
 
       return {
@@ -89,7 +90,7 @@ export const EventMapComponent = ({
       };
     }
     return defaultBounds;
-  }, [showSingleEvent, events, defaultBounds]);
+  }, [mapData, defaultBounds]);
 
   const isDark = useMemo(() => {
     return (
@@ -104,6 +105,16 @@ export const EventMapComponent = ({
     return `https://api.maptiler.com/maps/${styleType}/style.json?key=${apiKey}`;
   }, [apiKey, isDark]);
 
+  const tooltip = new Tooltip({
+    triggers: {
+      [LeafletMap.selectors.point]: (d: LeafletMapPoint<MapDataRecord>) => {
+        return d.isCluster
+          ? `${d.clusterPoints?.length} wydarzeń`
+          : d.properties.name;
+      },
+    },
+  });
+
   return (
     <>
       <div className={"relative rounded-md overflow-hidden h-full"}>
@@ -115,6 +126,7 @@ export const EventMapComponent = ({
           pointShape="ring"
           data={mapData}
           pointColor={pointColor}
+          tooltip={tooltip}
         />
       </div>
     </>

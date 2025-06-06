@@ -26,3 +26,11 @@ export async function getEventByIdAsync(id: string) {
     defaultErrorMessage: "Failed to fetch event.",
   });
 }
+
+export async function deleteEventAsync(id: string) {
+  return await axiosRequest<void, void>({
+    url: `/api/events/${id}`,
+    method: "DELETE",
+    defaultErrorMessage: "Failed to delete event.",
+  });
+}

@@ -1,8 +1,11 @@
 import { getLocationsAsync, deleteLocationAsync } from "@/api/locations";
+import { getEventsAsync, deleteEventAsync } from "@/api/events";
 import { Location } from "@/api/locations/types";
+import { Event } from "@/api/events/types";
 import { AddEventDialog } from "@/components/AddEventDialog";
 import { AddLocationDialog } from "@/components/AddLocationDialog";
 import { LocationsTable } from "@/components/LocationsTable";
+import { EventsTable } from "@/components/EventsTable";
 import { SkeletonTable } from "@/components/table/skeleton-table";
 import { Map } from "@/views/map/Map";
 import {
@@ -17,7 +20,9 @@ import { useEffect, useState } from "react";
 
 export const AdminProfile = () => {
   const [locations, setLocations] = useState<Location[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isEventsLoading, setIsEventsLoading] = useState(false);
 
   const fetchLocations = async () => {
     setIsLoading(true);
@@ -26,13 +31,26 @@ export const AdminProfile = () => {
     setIsLoading(false);
   };
 
+  const fetchEvents = async () => {
+    setIsEventsLoading(true);
+    const response = await getEventsAsync();
+    setEvents(response?.data.data ?? []);
+    setIsEventsLoading(false);
+  };
+
   const deleteLocation = async (location: Location) => {
     await deleteLocationAsync(location.id);
     await fetchLocations();
   };
 
+  const deleteEvent = async (event: Event) => {
+    await deleteEventAsync(event.id);
+    await fetchEvents();
+  };
+
   useEffect(() => {
     fetchLocations();
+    fetchEvents();
   }, []);
 
   return (
@@ -66,13 +84,17 @@ export const AdminProfile = () => {
           <CardHeader>
             <CardTitle>Zarządzanie eventami</CardTitle>
             <CardDescription>
-              Tutaj możesz zarządzać eventami. Funkcjonalność ta jest w budowie.
-              Wkrótce pojawią się tutaj opcje dodawania, edytowania i usuwania
-              eventów.
+              Tutaj możesz dodawać, edytować i usuwać eventy. Kliknij przycisk
+              poniżej, aby dodać nowy event.
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <AddEventDialog onEventAdded={fetchLocations} />
+          <CardContent className="space-y-4">
+            <AddEventDialog onEventAdded={fetchEvents} />
+            {isEventsLoading ? (
+              <SkeletonTable />
+            ) : (
+              <EventsTable events={events} onDelete={deleteEvent} />
+            )}
           </CardContent>
         </Card>
       </TabsContent>
