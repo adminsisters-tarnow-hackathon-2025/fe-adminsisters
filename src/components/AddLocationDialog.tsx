@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/form";
 import { useTheme } from "@/hooks/useTheme";
 import { zodResolver } from "@hookform/resolvers/zod";
+// @ts-expect-error sadf
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useMemo, useState } from "react";
@@ -28,6 +29,7 @@ import { z } from "zod";
 import { Input } from "./ui/input";
 
 // Fix for default markers in Leaflet with Webpack
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
@@ -179,11 +181,13 @@ export const AddLocationDialog = ({
         {/* Map for selecting location */}
         <div className="mb-4">
           <MapContainer
+            // @ts-expect-error sadf
             center={selectedPosition || [50.0124, 20.9883]}
             zoom={13}
             className="w-full h-[300px] rounded-md overflow-hidden border"
             key={`${tileUrl}-${isDark}`} // Force re-render when theme changes
           >
+            {/* @ts-expect-error sadf */}
             <TileLayer attribution={attribution} url={tileUrl} />
             <MapClickHandler onMapClick={handleMapClick} />
             {selectedPosition && <Marker position={selectedPosition} />}

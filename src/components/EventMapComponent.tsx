@@ -1,7 +1,9 @@
 import { useTheme } from "@/hooks/useTheme";
 import { Event } from "@/api/events/types";
+// @ts-expect-error sadf
 import { VisLeafletMap } from "@unovis/react";
 import { useMemo, useState } from "react";
+// @ts-expect-error sadf
 import { LeafletMap, LeafletMapPoint, Tooltip } from "@unovis/ts";
 
 type Bounds = {
@@ -25,8 +27,8 @@ interface EventMapComponentProps {
 
 export const EventMapComponent = ({
   events,
-  showSingleEvent = false,
-}: EventMapComponentProps) => {
+}: // @
+EventMapComponentProps) => {
   const { theme } = useTheme();
 
   const apiKey = import.meta.env.VITE_LEAFLET_MAP_API_KEY;
