@@ -43,7 +43,7 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] z-[10000]">
         <form onSubmit={handleSubmit}>
           <div className="flex flex-col gap-6">
             <div className="flex flex-col items-center text-center">

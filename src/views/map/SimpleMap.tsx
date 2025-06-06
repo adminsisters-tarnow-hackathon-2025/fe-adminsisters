@@ -1,9 +1,5 @@
-import {
-  deleteLocationAsync,
-  getLocationsWithEventsAsync,
-} from "@/api/locations";
+import { getLocationsWithEventsAsync } from "@/api/locations";
 import { LocationWithEvents } from "@/api/locations/types";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -11,6 +7,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -31,7 +29,6 @@ L.Icon.Default.mergeOptions({
 function DraggableMarker({
   location,
   onPositionChange,
-  onDelete,
 }: {
   location: LocationWithEvents;
   onPositionChange: (id: string, pos: [number, number]) => void;
@@ -55,17 +52,6 @@ function DraggableMarker({
     }),
     [location.id, onPositionChange]
   );
-
-  const handleDelete = async () => {
-    if (confirm(`Czy na pewno chcesz usunąć lokalizację "${location.name}"?`)) {
-      try {
-        await deleteLocationAsync(location.id);
-        onDelete(location.id);
-      } catch (error) {
-        console.error("Failed to delete location:", error);
-      }
-    }
-  };
 
   return (
     <Marker
@@ -99,17 +85,6 @@ function DraggableMarker({
               </div>
             </div>
           )}
-
-          <div className="pt-2 border-t">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleDelete}
-              className="w-fit border-destructive/50 text-destructive"
-            >
-              Usuń lokalizację
-            </Button>
-          </div>
         </div>
       </Popup>
     </Marker>
@@ -118,13 +93,18 @@ function DraggableMarker({
 
 export const SimpleMap = () => {
   const [locations, setLocations] = useState<LocationWithEvents[]>([]);
+  const [allLocations, setAllLocations] = useState<LocationWithEvents[]>([]);
   const [loading, setLoading] = useState(true);
+  const [dateFrom, setDateFrom] = useState<string>("");
+  const [dateTo, setDateTo] = useState<string>("");
 
   const fetchLocations = async () => {
     try {
       setLoading(true);
       const response = await getLocationsWithEventsAsync();
-      setLocations(response?.data.data ?? []);
+      const fetchedLocations = response?.data.data ?? [];
+      setAllLocations(fetchedLocations);
+      setLocations(fetchedLocations);
     } catch (error) {
       console.error("Failed to fetch locations:", error);
     } finally {
@@ -135,6 +115,37 @@ export const SimpleMap = () => {
   useEffect(() => {
     fetchLocations();
   }, []);
+
+  // Filter locations based on date range
+  useEffect(() => {
+    if (!dateFrom && !dateTo) {
+      setLocations(allLocations);
+      return;
+    }
+
+    const filtered = allLocations.filter((location) => {
+      if (!location.events || location.events.length === 0) return false;
+
+      return location.events.some((event) => {
+        const eventDateFrom = new Date(event.dateFrom);
+        const eventDateTo = new Date(event.dateTo);
+        const filterFrom = dateFrom ? new Date(dateFrom) : null;
+        const filterTo = dateTo ? new Date(dateTo) : null;
+
+        // Check if event date range overlaps with filter date range
+        if (filterFrom && filterTo) {
+          return eventDateFrom <= filterTo && eventDateTo >= filterFrom;
+        } else if (filterFrom) {
+          return eventDateTo >= filterFrom;
+        } else if (filterTo) {
+          return eventDateFrom <= filterTo;
+        }
+        return true;
+      });
+    });
+
+    setLocations(filtered);
+  }, [dateFrom, dateTo, allLocations]);
 
   const updateMarkerPosition = (id: string, position: [number, number]) => {
     setLocations((prev) =>
@@ -160,6 +171,59 @@ export const SimpleMap = () => {
         </CardDescription>
       </CardHeader>
       <CardContent>
+        {/* Date filters */}
+        <div className="mb-4 space-y-2">
+          <Label className="text-sm font-medium">
+            Filtruj po dacie wydarzeń:
+          </Label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <Label
+                htmlFor="dateFrom"
+                className="text-xs text-muted-foreground"
+              >
+                Od daty:
+              </Label>
+              <Input
+                id="dateFrom"
+                type="datetime-local"
+                value={dateFrom}
+                onChange={(e) => setDateFrom(e.target.value)}
+                className="text-sm"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="dateTo" className="text-xs text-muted-foreground">
+                Do daty:
+              </Label>
+              <Input
+                id="dateTo"
+                type="datetime-local"
+                value={dateTo}
+                onChange={(e) => setDateTo(e.target.value)}
+                className="text-sm"
+              />
+            </div>
+          </div>
+          {(dateFrom || dateTo) && (
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
+              <span>
+                Wyświetlane lokalizacje: {locations.length} z{" "}
+                {allLocations.length}
+              </span>
+              <button
+                onClick={() => {
+                  setDateFrom("");
+                  setDateTo("");
+                }}
+                className="text-blue-600 hover:underline"
+              >
+                Wyczyść filtry
+              </button>
+            </div>
+          )}
+        </div>
+
         {loading ? (
           <div className="w-full h-[500px] flex items-center justify-center border rounded-md">
             <p>Ładowanie lokalizacji...</p>

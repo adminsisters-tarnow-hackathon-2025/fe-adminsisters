@@ -24,4 +24,6 @@ export interface LocationWithEvents {
 export interface LocationEvent {
   id: string;
   name: string;
+  dateFrom: string;
+  dateTo: string;
 }
