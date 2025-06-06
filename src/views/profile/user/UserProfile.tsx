@@ -8,6 +8,12 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AchievementCard } from "../components/AchievementCard";
 import { TarnowiakCard } from "@/components/TarnowiakCard";
+import { EventCard } from "@/components/EventCard";
+import { useEffect, useState } from "react";
+import { getUserEventsAsync } from "@/api/users";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/store/userSlice";
+import { Event } from "@/api/events/types";
 
 export const UserProfile = () => {
   const achievements = [
@@ -69,12 +75,33 @@ export const UserProfile = () => {
       points: 50,
     },
   ];
+  const userId = useSelector(selectUser).user?.data.id;
+  const [events, setEvents] = useState<Event[]>([]);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      const response = await getUserEventsAsync(userId ?? "");
+      setEvents(response?.data.data ?? []);
+    };
+    fetchEvents();
+
+    const handleEventAdded = () => {
+      fetchEvents();
+    };
+
+    window.addEventListener("eventAdded", handleEventAdded);
+
+    return () => {
+      window.removeEventListener("eventAdded", handleEventAdded);
+    };
+  }, [userId]);
 
   return (
     <Tabs defaultValue="points" className="w-full">
-      <TabsList className="grid w-full grid-cols-2">
+      <TabsList className="">
         <TabsTrigger value="achievements">Osiągnięcia</TabsTrigger>
         <TabsTrigger value="points">Tarnowiaki</TabsTrigger>
+        <TabsTrigger value="your_events">Moje eventy</TabsTrigger>
       </TabsList>
       <TabsContent value="achievements">
         <Card className="w-full">
@@ -101,6 +128,23 @@ export const UserProfile = () => {
             {TarnowiakRedems.map((redem) => (
               <TarnowiakCard key={redem.id} redem={redem} />
             ))}
+          </CardContent>
+        </Card>
+      </TabsContent>
+      <TabsContent value="your_events">
+        <Card className="w-full">
+          <CardHeader>
+            <CardTitle>Twoje wydarzenia</CardTitle>
+            <CardDescription>
+              Przeglądaj wydarzenia, w których bierzesz udział.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-6">
+              {events.map((event, i) => (
+                <EventCard event={event} key={i} />
+              ))}
+            </div>
           </CardContent>
         </Card>
       </TabsContent>
