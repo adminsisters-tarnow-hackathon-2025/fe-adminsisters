@@ -12,6 +12,12 @@ export const Footer = () => {
   const isAdmin = true;
 
   const [isOpenAddEventDialog, setIsOpenAddEventDialog] = useState(false);
+
+  const handleEventAdded = () => {
+    // Trigger a custom event to notify Home component
+    window.dispatchEvent(new CustomEvent("eventAdded"));
+  };
+
   return (
     <>
       <nav className="border-b py-2 px-4 border-t">
@@ -58,6 +64,7 @@ export const Footer = () => {
       <AddEventDialog
         open={isOpenAddEventDialog}
         onOpenChange={setIsOpenAddEventDialog}
+        onEventAdded={handleEventAdded}
       />
     </>
   );

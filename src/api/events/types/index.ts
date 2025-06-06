@@ -5,7 +5,6 @@ export interface Event {
   longDescription: string;
   price: number;
   coinReward: number;
-  image: string;
   dateFrom: string;
   dateTo: string;
   location: EventLocation;
@@ -23,7 +22,6 @@ export interface CreateEvent {
   longDescription: string;
   price: number;
   coinReward: number;
-  image: number[];
   type: string;
   tags: string[];
   dateFrom: string;

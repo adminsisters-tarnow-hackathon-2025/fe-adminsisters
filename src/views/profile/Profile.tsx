@@ -2,7 +2,7 @@ import { AdminProfile } from "./admin/AdminProfile";
 import { UserProfile } from "./user/UserProfile";
 
 export const Profile = () => {
-  const isAdmin = true;
+  const isAdmin = false;
 
   if (isAdmin) {
     return <AdminProfile />;

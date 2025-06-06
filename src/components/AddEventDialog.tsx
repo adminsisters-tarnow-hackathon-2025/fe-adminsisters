@@ -48,9 +48,7 @@ const formSchema = z.object({
   coinReward: z.coerce.number().min(0, {
     message: "Nagroda w monetach musi być większa lub równa 0.",
   }),
-  image: z.instanceof(File, {
-    message: "Plik obrazu jest wymagany.",
-  }),
+
   type: z.string().min(1, {
     message: "Typ eventu jest wymagany.",
   }),
@@ -91,7 +89,6 @@ export const AddEventDialog = ({
       longDescription: "",
       price: 0,
       coinReward: 0,
-      image: undefined,
       type: "",
       tags: "",
       dateFrom: "",
@@ -117,8 +114,6 @@ export const AddEventDialog = ({
   const onSubmit = async (values: FormData) => {
     try {
       // Convert File to byte array
-      const imageBuffer = await values.image.arrayBuffer();
-      const imageByteArray = Array.from(new Uint8Array(imageBuffer));
 
       const createEventData: CreateEvent = {
         name: values.name,
@@ -126,7 +121,6 @@ export const AddEventDialog = ({
         longDescription: values.longDescription,
         price: values.price,
         coinReward: values.coinReward,
-        image: imageByteArray,
         type: values.type,
         tags: values.tags
           .split(",")
@@ -137,7 +131,8 @@ export const AddEventDialog = ({
         locationId: values.locationId,
       };
 
-      console.log("Image byte array length:", imageByteArray.length);
+      console.log(values.dateFrom);
+      console.log(values.dateTo);
 
       await handleCreateEvent(createEventData);
 
@@ -232,28 +227,6 @@ export const AddEventDialog = ({
                 )}
               />
             </div>
-            <FormField
-              control={form.control}
-              name="image"
-              render={({ field: { onChange, name, ref } }) => (
-                <FormItem>
-                  <FormLabel>Obraz</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      name={name}
-                      ref={ref}
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        onChange(file);
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <FormField
               control={form.control}
               name="type"

@@ -37,7 +37,7 @@ export const UserProfile = () => {
   ];
 
   return (
-    <Tabs defaultValue="achievements" className="w-full">
+    <Tabs defaultValue="points" className="w-full">
       <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="achievements">Osiągnięcia</TabsTrigger>
         <TabsTrigger value="points">Tarnowiaki</TabsTrigger>

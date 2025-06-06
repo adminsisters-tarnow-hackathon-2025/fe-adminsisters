@@ -1,8 +1,9 @@
 import { axiosRequest } from "@/hooks/useAxios";
 import { CreateEvent, Event } from "./types";
+import { ResultObject } from "@/types/models";
 
-export async function getPostsAsync() {
-  return await axiosRequest<Event[]>({
+export async function getEventsAsync() {
+  return await axiosRequest<ResultObject<Event[]>, void>({
     url: "/api/events",
     method: "GET",
     defaultErrorMessage: "Failed to fetch events.",
