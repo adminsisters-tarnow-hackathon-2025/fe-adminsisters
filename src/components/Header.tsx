@@ -9,8 +9,8 @@ export const Header = () => {
       <nav className="border-b px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <Link to={RouterUrlEnum.HOME} className="text-lg font-semibold">
-              Life in Tarnów
+            <Link to={RouterUrlEnum.HOME} className="text-lg font-semibold p-2">
+              <img src="/src/assets/LOGO 1.svg" className="w-40" />
             </Link>
           </div>
           <div className="flex items-center space-x-2">

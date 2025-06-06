@@ -34,29 +34,29 @@ export const Footer = () => {
             <Ticket />
             <p>Bilety</p>
           </div>
-          <div className="rounded-full bg-secondary-foreground p-4">
-            <Link
-              to={isAdmin ? "#" : RouterUrlEnum.SCAN_QR}
-              onClick={(e) => {
-                if (isAdmin) {
-                  e.preventDefault();
-                  setIsOpenAddEventDialog(true);
-                  return;
-                }
-                if (!isLoggedIn) {
-                  e.preventDefault();
-                  dispatch(checkAuthAndPromptLogin());
-                  return;
-                }
-              }}
-            >
+          <Link
+            to={isAdmin ? "#" : RouterUrlEnum.SCAN_QR}
+            onClick={(e) => {
+              if (isAdmin) {
+                e.preventDefault();
+                setIsOpenAddEventDialog(true);
+                return;
+              }
+              if (!isLoggedIn) {
+                e.preventDefault();
+                dispatch(checkAuthAndPromptLogin());
+                return;
+              }
+            }}
+          >
+            <div className="rounded-full bg-secondary-foreground p-4">
               {isAdmin ? (
                 <Plus className="text-secondary" />
               ) : (
                 <ScanQrCode className="text-secondary" />
               )}
-            </Link>
-          </div>
+            </div>
+          </Link>
           <Link
             to={RouterUrlEnum.PROFILE}
             className="rounded-full flex flex-col items-center p-2 w-full"
