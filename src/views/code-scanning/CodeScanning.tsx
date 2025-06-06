@@ -6,29 +6,37 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { axiosRequest } from "@/hooks/useAxios";
-import { selectUser } from "@/store/userSlice";
+import { selectUser, setCoins } from "@/store/userSlice";
 import { Scanner } from "@yudiel/react-qr-scanner";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 export const CodeScanning = () => {
   const user = useSelector(selectUser);
   // const isLoggedIn = useSelector(selectIsLoggedIn);
   const navigate = useNavigate();
   const [scanned, setScanned] = useState<string | null>();
+  const dispatch = useDispatch();
 
   const handleScan = (result: string) => {
     setScanned(result);
 
-    axiosRequest<void, { amount: number }>({
-      url: `api/users/${user.user?.data.id}/add-coin`,
-      method: "POST",
-      data: {
-        amount: 1,
-      },
-      defaultErrorMessage: "Failed to add coins",
-      successMessage: "Coins added successfully",
-    });
+    async function handleScane() {
+      const response = await axiosRequest<void, { amount: number }>({
+        url: `api/users/${user.user?.data.id}/add-coin`,
+        method: "POST",
+        data: {
+          amount: 1,
+        },
+        defaultErrorMessage: "Failed to add coins",
+        successMessage: "Coins added successfully",
+      });
+      dispatch(setCoins(response?.data));
+      alert(response);
+      // user.user?.data.coinAmount = response.data;
+    }
+
+    handleScane();
 
     axiosRequest({
       url: `api/users/${user.user?.data.id}/events/${result}`,

@@ -41,6 +41,11 @@ export const userSlice = createSlice({
         state.openLoginDialog = true;
       }
     },
+    setCoins: (state, action) => {
+      if (state.user) {
+        state.user.data.coinAmount = action.payload;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(loginThunk.fulfilled, (state, action) => {
@@ -52,7 +57,7 @@ export const userSlice = createSlice({
   },
 });
 
-export const { logout, setOpenLoginDialog, checkAuthAndPromptLogin } =
+export const { logout, setOpenLoginDialog, setCoins, checkAuthAndPromptLogin } =
   userSlice.actions;
 
 export const selectIsLoggedIn = (state: { user: UserState }) =>
