@@ -198,7 +198,6 @@ export const SimpleMap = () => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {/* Date filters */}
         <div className="mb-4 space-y-2">
           <Label className="text-sm font-medium">
             Filtruj po dacie wydarzeń:

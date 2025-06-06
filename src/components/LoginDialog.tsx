@@ -21,7 +21,7 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
     password: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const userData = {
@@ -30,6 +30,7 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
     };
 
     dispatch(loginThunk(userData));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     setFormData({ name: "", password: "" });
   };
 
