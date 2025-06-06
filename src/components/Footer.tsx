@@ -1,4 +1,6 @@
+import { checkAuthAndPromptLogin, selectIsLoggedIn } from "@/store/userSlice";
 import { RouterUrlEnum } from "@/types/enums";
+import { useDispatch, useSelector } from "react-redux";
 import { Plus, ScanQrCode, Ticket, User } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation } from "react-router";
@@ -8,6 +10,8 @@ export const Footer = () => {
   const location = useLocation();
 
   const isActive = (path: string) => location.pathname === path;
+  const isLoggedIn = useSelector(selectIsLoggedIn);
+  const dispatch = useDispatch();
 
   const isAdmin = true;
 
@@ -37,7 +41,20 @@ export const Footer = () => {
                 onClick={() => setIsOpenAddEventDialog(true)}
               />
             ) : (
-              <ScanQrCode className="text-secondary" />
+              <Link
+            to={RouterUrlEnum.SCAN_QR}
+            onClick={(e) => {
+              if (!isLoggedIn) {
+                e.preventDefault();
+                dispatch(checkAuthAndPromptLogin());
+
+                return;
+              }
+            }}
+            className="rounded-full bg-secondary-foreground p-4"
+          >
+            <ScanQrCode className="text-secondary" />
+          </Link>
             )}
           </div>
           <Link

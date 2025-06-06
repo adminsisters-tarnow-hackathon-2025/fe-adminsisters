@@ -1,6 +1,7 @@
 import { AddLocationDialog } from "@/components/AddLocationDialog";
 import RootLayout from "@/layouts/RootLayout";
 import { RouterUrlEnum } from "@/types/enums/RouterUrlEnum";
+import { CodeScanning } from "@/views/code-scanning/CodeScanning";
 import Home from "@/views/home/Home";
 import { Map } from "@/views/map/Map";
 import NotFound from "@/views/not-found/NotFound";
@@ -25,8 +26,8 @@ const router = createBrowserRouter([
         element: <Profile />,
       },
       {
-        path: RouterUrlEnum.TEMP,
-        element: <AddLocationDialog />,
+        path: RouterUrlEnum.SCAN_QR,
+        element: <CodeScanning />,
       },
     ],
   },
