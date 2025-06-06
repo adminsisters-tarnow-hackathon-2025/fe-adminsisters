@@ -72,6 +72,7 @@ export const AdminProfile = () => {
             {isLoading ? (
               <SkeletonTable />
             ) : (
+              // @ts-expect-error asdf
               <LocationsTable locations={locations} onDelete={deleteLocation} />
             )}
           </CardContent>

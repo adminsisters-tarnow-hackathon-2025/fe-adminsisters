@@ -22,7 +22,7 @@ export const CodeScanning = () => {
     setScanned(result);
 
     async function handleScane() {
-      const response = await axiosRequest<void, { amount: number }>({
+      axiosRequest<void, { amount: number }>({
         url: `api/users/${user.user?.data.id}/add-coin`,
         method: "POST",
         data: {
