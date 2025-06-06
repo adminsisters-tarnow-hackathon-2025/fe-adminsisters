@@ -31,7 +31,6 @@ function DraggableMarker({
   location: Location;
   onPositionChange: (id: string, pos: [number, number]) => void;
 }) {
-  const [draggable, setDraggable] = useState(false);
   const markerRef = useRef<L.Marker>(null);
 
   const eventHandlers = useMemo(
@@ -50,13 +49,8 @@ function DraggableMarker({
     [location.id, onPositionChange]
   );
 
-  const toggleDraggable = () => {
-    setDraggable((d) => !d);
-  };
-
   return (
     <Marker
-      draggable={draggable}
       eventHandlers={eventHandlers}
       position={[location.latitude, location.longitude]}
       ref={markerRef}
@@ -69,21 +63,7 @@ function DraggableMarker({
           <div>
             <span className="font-medium">Adres:</span> {location.address}
           </div>
-          <div>
-            <span className="font-medium">Współrzędne:</span>
-            <br />
-            Lat: {location.latitude.toFixed(6)}
-            <br />
-            Lng: {location.longitude.toFixed(6)}
-          </div>
-          <div className="pt-2 border-t">
-            <span
-              onClick={toggleDraggable}
-              className="text-blue-600 cursor-pointer hover:underline text-sm"
-            >
-              {draggable ? "Wyłącz przeciąganie" : "Włącz przeciąganie"}
-            </span>
-          </div>
+          {location.name}
         </div>
       </Popup>
     </Marker>
