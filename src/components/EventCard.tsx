@@ -95,8 +95,8 @@ export const EventCard: React.FC<{ event: Event }> = ({ event }) => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="text-muted-foreground text-sm">
-            {event.longDescription}
+          <div className="text-muted-foreground text-sm w-full  break-words">
+            {event.shortDescription}
           </div>
         </CardContent>
         <CardFooter className="flex justify-between items-center w-full gap-4">

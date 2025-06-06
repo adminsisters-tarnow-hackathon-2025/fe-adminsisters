@@ -1,5 +1,5 @@
 import { useTheme } from "@/hooks/useTheme";
-import { Location } from "@/types/models";
+import { Event } from "@/api/events/types";
 import { VisLeafletMap } from "@unovis/react";
 import { useMemo, useState } from "react";
 
@@ -8,15 +8,24 @@ type Bounds = {
   southWest: { lat: number; lng: number };
 };
 
-interface MapComponentProps {
-  locations?: Location[];
-  showSingleLocation?: boolean;
+type MapDataRecord = {
+  latitude: number;
+  longitude: number;
+  id: string;
+  name: string;
+  address: string;
+  category: string;
+};
+
+interface EventMapComponentProps {
+  events?: Event[];
+  showSingleEvent?: boolean;
 }
 
-export const MapComponent = ({
-  locations,
-  showSingleLocation = false,
-}: MapComponentProps) => {
+export const EventMapComponent = ({
+  events,
+  showSingleEvent = false,
+}: EventMapComponentProps) => {
   const { theme } = useTheme();
 
   const apiKey = import.meta.env.VITE_LEAFLET_MAP_API_KEY;
@@ -31,25 +40,47 @@ export const MapComponent = ({
     southWest: { lat: 50.0021, lng: 20.9367 },
   });
 
+  const pointColor = (d: MapDataRecord) => {
+    switch (d.category) {
+      case "Koncert":
+        return "#ff6b6b";
+      case "Konferencja":
+        return "#4ecdc4";
+      case "Warsztat":
+        return "#45b7d1";
+      case "Festiwal":
+        return "#f9ca24";
+      case "Wystawa":
+        return "#6c5ce7";
+      case "Sport":
+        return "#a29bfe";
+      case "Teatr":
+        return "#fd79a8";
+      default:
+        return "#888888";
+    }
+  };
   const mapData = useMemo(() => {
-    if (locations && locations.length > 0) {
-      return locations
-        .filter((location) => location.latitude && location.longitude)
-        .map((location) => ({
-          latitude: parseFloat(location.latitude?.toString() || "0"),
-          longitude: parseFloat(location.longitude?.toString() || "0"),
-          name: location.name,
-          address: location.address,
+    if (events && events.length > 0) {
+      return events
+        .filter((event) => event.location.latitude && event.location.longitude)
+        .map((event) => ({
+          latitude: parseFloat(event.location.latitude?.toString() || "0"),
+          longitude: parseFloat(event.location.longitude?.toString() || "0"),
+          id: event.id,
+          name: event.name,
+          address: event.location.address,
+          category: event.type,
         }));
     }
     return [];
-  }, [locations]);
+  }, [events]);
 
   const bounds = useMemo(() => {
-    if (showSingleLocation && locations && locations.length === 1) {
-      const location = locations[0];
-      const lat = parseFloat(location.latitude?.toString() || "50.05");
-      const lng = parseFloat(location.longitude?.toString() || "20.95");
+    if (showSingleEvent && events && events.length === 1) {
+      const event = events[0];
+      const lat = parseFloat(event.location.latitude?.toString() || "50.05");
+      const lng = parseFloat(event.location.longitude?.toString() || "20.95");
       const offset = 0.01;
 
       return {
@@ -58,7 +89,7 @@ export const MapComponent = ({
       };
     }
     return defaultBounds;
-  }, [showSingleLocation, locations, defaultBounds]);
+  }, [showSingleEvent, events, defaultBounds]);
 
   const isDark = useMemo(() => {
     return (
@@ -83,6 +114,7 @@ export const MapComponent = ({
           initialBounds={bounds}
           pointShape="ring"
           data={mapData}
+          pointColor={pointColor}
         />
       </div>
     </>

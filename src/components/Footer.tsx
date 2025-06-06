@@ -13,7 +13,7 @@ export const Footer = () => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const dispatch = useDispatch();
 
-  const isAdmin = false;
+  const isAdmin = true;
 
   const [isOpenAddEventDialog, setIsOpenAddEventDialog] = useState(false);
 
