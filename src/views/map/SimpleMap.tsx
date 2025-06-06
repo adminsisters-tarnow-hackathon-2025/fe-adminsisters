@@ -1,3 +1,6 @@
+import { getLocationsAsync } from "@/api/locations";
+import { Location } from "@/api/locations/types";
+import { AddLocationDialog } from "@/components/AddLocationDialog";
 import {
   Card,
   CardContent,
@@ -5,19 +8,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  useMapEvents,
-} from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { useState, useRef, useMemo, useEffect } from "react";
-import { getLocationsAsync } from "@/api/locations";
-import { Location } from "@/api/locations/types";
-import { AddLocationDialog } from "@/components/AddLocationDialog";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 
 // Fix for default markers in Leaflet with Webpack
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -96,25 +90,9 @@ function DraggableMarker({
   );
 }
 
-function MapClickHandler({
-  onMapClick,
-}: {
-  onMapClick: (latlng: [number, number]) => void;
-}) {
-  useMapEvents({
-    click(e) {
-      onMapClick([e.latlng.lat, e.latlng.lng]);
-    },
-  });
-  return null;
-}
-
 export const SimpleMap = () => {
   const [locations, setLocations] = useState<Location[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedPosition, setSelectedPosition] = useState<
-    [number, number] | null
-  >(null);
 
   const fetchLocations = async () => {
     try {
@@ -132,10 +110,6 @@ export const SimpleMap = () => {
     fetchLocations();
   }, []);
 
-  const handleMapClick = (position: [number, number]) => {
-    setSelectedPosition(position);
-  };
-
   const updateMarkerPosition = (id: string, position: [number, number]) => {
     setLocations((prev) =>
       prev.map((location) =>
@@ -148,24 +122,18 @@ export const SimpleMap = () => {
 
   const handleLocationAdded = () => {
     fetchLocations();
-    setSelectedPosition(null);
   };
 
   return (
-    <Card className="w-full p-2">
+    <Card>
       <CardHeader>
-        <div className="flex justify-between items-start">
-          <div>
-            <CardTitle>Mapa lokalizacji</CardTitle>
-            <CardDescription>
-              Kliknij na mapę aby dodać nową lokalizację. Kliknij na znacznik
-              aby zobaczyć szczegóły.
-            </CardDescription>
-          </div>
-          <AddLocationDialog
-            onLocationAdded={handleLocationAdded}
-            initialPosition={selectedPosition}
-          />
+        <CardTitle>Mapa lokalizacji</CardTitle>
+        <CardDescription>
+          Kliknij na mapę aby dodać nową lokalizację. Kliknij na znacznik aby
+          zobaczyć szczegóły.
+        </CardDescription>
+        <div className="mt-2 ">
+          <AddLocationDialog onLocationAdded={handleLocationAdded} />
         </div>
       </CardHeader>
       <CardContent>
@@ -175,11 +143,7 @@ export const SimpleMap = () => {
           </div>
         ) : (
           <MapContainer
-            center={
-              locations.length > 0
-                ? [locations[0].latitude, locations[0].longitude]
-                : [51.505, -0.09]
-            }
+            center={[50.0124, 20.9883]}
             zoom={13}
             className="w-full h-[500px] rounded-md overflow-hidden border"
           >
@@ -187,7 +151,6 @@ export const SimpleMap = () => {
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            <MapClickHandler onMapClick={handleMapClick} />
             {locations.map((location) => (
               <DraggableMarker
                 key={location.id}

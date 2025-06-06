@@ -152,7 +152,7 @@ export const AddLocationDialog = ({
         {/* Map for selecting location */}
         <div className="mb-4">
           <MapContainer
-            center={selectedPosition || [52.237049, 21.017532]}
+            center={selectedPosition || [50.0124, 20.9883]}
             zoom={13}
             className="w-full h-[300px] rounded-md overflow-hidden border"
           >
