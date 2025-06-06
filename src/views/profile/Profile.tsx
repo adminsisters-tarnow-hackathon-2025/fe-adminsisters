@@ -1,10 +1,11 @@
+import { useSelector } from "react-redux";
 import { AdminProfile } from "./admin/AdminProfile";
 import { UserProfile } from "./user/UserProfile";
-
+import { selectUser } from "@/store/userSlice";
 export const Profile = () => {
-  const isAdmin = true;
+  const user = useSelector(selectUser);
 
-  if (isAdmin) {
+  if (user.user?.data.isAdmin) {
     return <AdminProfile />;
   }
 

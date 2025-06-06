@@ -38,8 +38,7 @@ export const CodeScanning = () => {
     });
 
     setTimeout(() => {
-      // navigate("/events/" + result);
-      navigate("/");
+      navigate("/events/01974302-d2e9-70d7-8b05-95b9c4a74054");
     }, 3000);
   };
 

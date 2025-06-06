@@ -4,9 +4,9 @@ import {
   selectUser,
 } from "@/store/userSlice";
 import { RouterUrlEnum } from "@/types/enums";
-import { useDispatch, useSelector } from "react-redux";
 import { Plus, ScanQrCode, Ticket, User } from "lucide-react";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router";
 import { AddEventDialog } from "./AddEventDialog";
 
@@ -19,7 +19,6 @@ export const Footer = () => {
 
   console.log(useSelector(selectUser));
   const dispatch = useDispatch();
-
 
   const [isOpenAddEventDialog, setIsOpenAddEventDialog] = useState(false);
 
