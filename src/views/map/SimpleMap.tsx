@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useTheme } from "@/hooks/useTheme";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -92,11 +93,37 @@ function DraggableMarker({
 }
 
 export const SimpleMap = () => {
+  const { theme } = useTheme();
   const [locations, setLocations] = useState<LocationWithEvents[]>([]);
   const [allLocations, setAllLocations] = useState<LocationWithEvents[]>([]);
   const [loading, setLoading] = useState(true);
   const [dateFrom, setDateFrom] = useState<string>("");
   const [dateTo, setDateTo] = useState<string>("");
+
+  const apiKey = import.meta.env.VITE_LEAFLET_MAP_API_KEY;
+
+  const isDark = useMemo(() => {
+    return (
+      theme === "dark" ||
+      (theme === "system" &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
+    );
+  }, [theme]);
+
+  const tileUrl = useMemo(() => {
+    if (apiKey) {
+      const styleType = isDark ? "basic-v2-dark" : "basic-v2";
+      return `https://api.maptiler.com/maps/${styleType}/{z}/{x}/{y}.png?key=${apiKey}`;
+    }
+    return "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+  }, [apiKey, isDark]);
+
+  const attribution = useMemo(() => {
+    if (apiKey) {
+      return '&copy; <a href="https://www.maptiler.com/copyright/">MapTiler</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+    }
+    return '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+  }, [apiKey]);
 
   const fetchLocations = async () => {
     try {
@@ -232,12 +259,10 @@ export const SimpleMap = () => {
           <MapContainer
             center={[50.0124, 20.9883]}
             zoom={13}
-            className="w-full h-[500px] rounded-md overflow-hidden border"
+            className="w-full h-[500px] rounded-md overflow-hidden "
+            key={`${tileUrl}-${isDark}`} // Force re-render when theme changes
           >
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
+            <TileLayer attribution={attribution} url={tileUrl} />
             {locations.map((location) => (
               <DraggableMarker
                 key={location.id}

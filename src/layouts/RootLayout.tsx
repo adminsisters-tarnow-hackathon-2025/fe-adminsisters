@@ -24,7 +24,7 @@ export default function RootLayout() {
           <LoginDialog open={openLoginDialog} onOpenChange={handleOpenChange} />
           <Outlet />
         </main>
-        <div className="sticky bottom-0 w-full z-50 bg-background mt-auto">
+        <div className="sticky bottom-0 w-full z-[500000] bg-background mt-auto">
           <Footer />
         </div>
       </div>

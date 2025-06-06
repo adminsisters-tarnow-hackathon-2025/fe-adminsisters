@@ -12,9 +12,10 @@ import {
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Clock, MapPin, Wallet, ArrowLeft } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { useTheme } from "@/hooks/useTheme";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -53,8 +54,34 @@ const formatPolishDateTime = (dateString: string) => {
 export const EventDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { theme } = useTheme();
   const [event, setEvent] = useState<Event | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const apiKey = import.meta.env.VITE_LEAFLET_MAP_API_KEY;
+
+  const isDark = useMemo(() => {
+    return (
+      theme === "dark" ||
+      (theme === "system" &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
+    );
+  }, [theme]);
+
+  const tileUrl = useMemo(() => {
+    if (apiKey) {
+      const styleType = isDark ? "basic-v2-dark" : "basic-v2";
+      return `https://api.maptiler.com/maps/${styleType}/{z}/{x}/{y}.png?key=${apiKey}`;
+    }
+    return "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+  }, [apiKey, isDark]);
+
+  const attribution = useMemo(() => {
+    if (apiKey) {
+      return '&copy; <a href="https://www.maptiler.com/copyright/">MapTiler</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+    }
+    return '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+  }, [apiKey]);
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -208,11 +235,9 @@ export const EventDetails = () => {
                 center={[event.location.latitude, event.location.longitude]}
                 zoom={15}
                 className="w-full h-full"
+                key={`${tileUrl}-${isDark}`} // Force re-render when theme changes
               >
-                <TileLayer
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
+                <TileLayer attribution={attribution} url={tileUrl} />
                 <Marker
                   position={[event.location.latitude, event.location.longitude]}
                 >

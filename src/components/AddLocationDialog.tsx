@@ -17,10 +17,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useTheme } from "@/hooks/useTheme";
 import { zodResolver } from "@hookform/resolvers/zod";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
 import { z } from "zod";
@@ -74,10 +75,36 @@ function MapClickHandler({
 export const AddLocationDialog = ({
   onLocationAdded,
 }: AddLocationDialogProps) => {
+  const { theme } = useTheme();
   const [open, setOpen] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState<
     [number, number] | null
   >(null);
+
+  const apiKey = import.meta.env.VITE_LEAFLET_MAP_API_KEY;
+
+  const isDark = useMemo(() => {
+    return (
+      theme === "dark" ||
+      (theme === "system" &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
+    );
+  }, [theme]);
+
+  const tileUrl = useMemo(() => {
+    if (apiKey) {
+      const styleType = isDark ? "basic-v2-dark" : "basic-v2";
+      return `https://api.maptiler.com/maps/${styleType}/{z}/{x}/{y}.png?key=${apiKey}`;
+    }
+    return "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+  }, [apiKey, isDark]);
+
+  const attribution = useMemo(() => {
+    if (apiKey) {
+      return '&copy; <a href="https://www.maptiler.com/copyright/">MapTiler</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+    }
+    return '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+  }, [apiKey]);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -155,11 +182,9 @@ export const AddLocationDialog = ({
             center={selectedPosition || [50.0124, 20.9883]}
             zoom={13}
             className="w-full h-[300px] rounded-md overflow-hidden border"
+            key={`${tileUrl}-${isDark}`} // Force re-render when theme changes
           >
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
+            <TileLayer attribution={attribution} url={tileUrl} />
             <MapClickHandler onMapClick={handleMapClick} />
             {selectedPosition && <Marker position={selectedPosition} />}
           </MapContainer>
@@ -205,6 +230,7 @@ export const AddLocationDialog = ({
                         type="number"
                         step="any"
                         placeholder="50.0647"
+                        disabled
                         {...field}
                       />
                     </FormControl>
@@ -222,6 +248,7 @@ export const AddLocationDialog = ({
                       <Input
                         type="number"
                         step="any"
+                        disabled
                         placeholder="19.9450"
                         {...field}
                       />
