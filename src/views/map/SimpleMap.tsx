@@ -1,6 +1,8 @@
-import { deleteLocationAsync, getLocationsAsync } from "@/api/locations";
-import { Location } from "@/api/locations/types";
-import { AddLocationDialog } from "@/components/AddLocationDialog";
+import {
+  deleteLocationAsync,
+  getLocationsWithEventsAsync,
+} from "@/api/locations";
+import { LocationWithEvents } from "@/api/locations/types";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,6 +15,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { useNavigate } from "react-router";
 
 // Fix for default markers in Leaflet with Webpack
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -30,10 +33,11 @@ function DraggableMarker({
   onPositionChange,
   onDelete,
 }: {
-  location: Location;
+  location: LocationWithEvents;
   onPositionChange: (id: string, pos: [number, number]) => void;
   onDelete: (id: string) => void;
 }) {
+  const navigate = useNavigate();
   const markerRef = useRef<L.Marker>(null);
 
   const eventHandlers = useMemo(
@@ -69,7 +73,7 @@ function DraggableMarker({
       position={[location.latitude, location.longitude]}
       ref={markerRef}
     >
-      <Popup minWidth={200}>
+      <Popup minWidth={250}>
         <div className="space-y-2">
           <div>
             <strong className="text-lg">{location.name}</strong>
@@ -77,6 +81,25 @@ function DraggableMarker({
           <div>
             <span className="font-medium">Adres:</span> {location.address}
           </div>
+
+          {location.events && location.events.length > 0 && (
+            <div className="pt-2 border-t">
+              <span className="font-medium">Wydarzenia w tej lokalizacji:</span>
+              <div className="mt-1 space-y-1">
+                {location.events.map((event) => (
+                  <div key={event.id}>
+                    <button
+                      onClick={() => navigate(`/events/${event.id}`)}
+                      className="text-blue-600 hover:text-blue-800 hover:underline text-sm cursor-pointer"
+                    >
+                      {event.name}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="pt-2 border-t">
             <Button
               variant="outline"
@@ -94,13 +117,13 @@ function DraggableMarker({
 }
 
 export const SimpleMap = () => {
-  const [locations, setLocations] = useState<Location[]>([]);
+  const [locations, setLocations] = useState<LocationWithEvents[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchLocations = async () => {
     try {
       setLoading(true);
-      const response = await getLocationsAsync();
+      const response = await getLocationsWithEventsAsync();
       setLocations(response?.data.data ?? []);
     } catch (error) {
       console.error("Failed to fetch locations:", error);
@@ -123,10 +146,6 @@ export const SimpleMap = () => {
     );
   };
 
-  const handleLocationAdded = () => {
-    fetchLocations();
-  };
-
   const handleLocationDelete = (id: string) => {
     setLocations((prev) => prev.filter((location) => location.id !== id));
   };
@@ -136,12 +155,9 @@ export const SimpleMap = () => {
       <CardHeader>
         <CardTitle>Mapa lokalizacji</CardTitle>
         <CardDescription>
-          Kliknij na mapę aby dodać nową lokalizację. Kliknij na znacznik aby
-          zobaczyć szczegóły.
+          Lokalizacje z zaplanowanymi lub trwającymi wydarzeniami. Kliknij na
+          znacznik aby zobaczyć szczegóły.
         </CardDescription>
-        <div className="mt-2 ">
-          <AddLocationDialog onLocationAdded={handleLocationAdded} />
-        </div>
       </CardHeader>
       <CardContent>
         {loading ? (

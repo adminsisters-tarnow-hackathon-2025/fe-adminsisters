@@ -4,7 +4,7 @@ import {
   selectUser,
 } from "@/store/userSlice";
 import { RouterUrlEnum } from "@/types/enums";
-import { Plus, ScanQrCode, Ticket, User } from "lucide-react";
+import { Map, Plus, ScanQrCode, User } from "lucide-react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router";
@@ -31,14 +31,39 @@ export const Footer = () => {
     <>
       <nav className="border-b py-2 px-4 border-t">
         <div className="flex items-center justify-around px-4">
-          <div
+          {/* <div
             className={`rounded-full flex flex-col items-center p-2 w-full  ${
               isActive("/bilety") ? "bg-muted" : ""
             }`}
           >
-            <Ticket />
-            <p>Bilety</p>
-          </div>
+            <Map
+              fill={`${
+                isActive(RouterUrlEnum.MAP)
+                  ? "var(--color-secondary-foreground)"
+                  : "none"
+              }`}
+            />
+            <p>Mapa</p>
+          </div> */}
+          <Link
+            to={RouterUrlEnum.MAP}
+            className="rounded-full flex flex-col items-center p-2 w-full"
+          >
+            <Map
+              fill={`${
+                isActive(RouterUrlEnum.MAP)
+                  ? "var(--color-secondary-foreground)"
+                  : "none"
+              }`}
+            />
+            <p
+              className={`${
+                isActive(RouterUrlEnum.MAP) ? "font-semibold" : ""
+              }`}
+            >
+              Mapa
+            </p>
+          </Link>
           <Link
             to={isAdmin ? "#" : RouterUrlEnum.SCAN_QR}
             onClick={(e) => {

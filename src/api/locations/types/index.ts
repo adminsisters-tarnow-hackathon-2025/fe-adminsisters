@@ -12,13 +12,13 @@ export interface Location {
   longitude: number;
   latitude: number;
 }
-export interface Location {
+export interface LocationWithEvents {
   id: string;
   name: string;
   address: string;
   longitude: number;
   latitude: number;
-  events: Event[];
+  events: LocationEvent[];
 }
 
 export interface LocationEvent {
