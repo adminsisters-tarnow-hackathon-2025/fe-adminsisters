@@ -18,15 +18,14 @@ export const Header = () => {
               <img src="/src/assets/LOGO 1.svg" className="w-40" />
             </Link>
           </div>
-          <Link
-            to={RouterUrlEnum.PROFILE}
-            className="flex items-center space-x-2"
-          >
-            <Badge variant={"outline"} className=" py-1 bg-background">
-              {userCoins || 0} <img src="/src/assets/Tarnowiak.svg" alt="" />
-            </Badge>
+          <div className="flex items-center space-x-2">
+            <Link to={RouterUrlEnum.PROFILE}>
+              <Badge variant={"outline"} className=" py-1 bg-background">
+                {userCoins || 0} <img src="/src/assets/Tarnowiak.svg" alt="" />
+              </Badge>
+            </Link>
             <ModeToggle />
-          </Link>
+          </div>
         </div>
       </nav>
     </>

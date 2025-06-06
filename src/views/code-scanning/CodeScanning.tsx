@@ -26,12 +26,12 @@ export const CodeScanning = () => {
         url: `api/users/${user.user?.data.id}/add-coin`,
         method: "POST",
         data: {
-          amount: 1,
+          amount: 10,
         },
         defaultErrorMessage: "Failed to add coins",
         successMessage: "Coins added successfully",
       });
-      dispatch(setCoins(response?.data));
+      dispatch(setCoins(user.user?.data.coinAmount ?? 0 + 10));
       alert(response);
       // user.user?.data.coinAmount = response.data;
     }
