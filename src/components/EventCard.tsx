@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { selectIsLoggedIn, checkAuthAndPromptLogin } from "@/store/userSlice";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 import { Clock, Heart, MapPin, Wallet } from "lucide-react";
 import React, { useState } from "react";
 import { EventStatusBadge } from "./EventStatusBadge";
@@ -39,6 +40,7 @@ const formatPolishDateTime = (dateString: string) => {
 export const EventCard: React.FC<{ event: Event }> = ({ event }) => {
   const [isLiked, setIsLiked] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const isLoggedIn = useSelector(selectIsLoggedIn);
 
   const toggleLike = () => {
@@ -47,6 +49,10 @@ export const EventCard: React.FC<{ event: Event }> = ({ event }) => {
       return;
     }
     setIsLiked(!isLiked);
+  };
+
+  const handleViewDetails = () => {
+    navigate(`/events/${event.id}`);
   };
 
   return (
@@ -107,7 +113,9 @@ export const EventCard: React.FC<{ event: Event }> = ({ event }) => {
             } cursor-pointer`}
             onClick={toggleLike}
           />
-          <Button className="flex-1">Zobacz szczegóły</Button>
+          <Button className="flex-1" onClick={handleViewDetails}>
+            Zobacz szczegóły
+          </Button>
         </CardFooter>
       </Card>
     </>

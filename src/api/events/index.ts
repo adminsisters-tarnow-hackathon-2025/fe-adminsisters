@@ -18,3 +18,11 @@ export async function createEventAsync(data: CreateEvent) {
     defaultErrorMessage: "Failed to create event.",
   });
 }
+
+export async function getEventByIdAsync(id: string) {
+  return await axiosRequest<ResultObject<Event>, void>({
+    url: `/api/events/${id}`,
+    method: "GET",
+    defaultErrorMessage: "Failed to fetch event.",
+  });
+}
