@@ -181,7 +181,7 @@ export const AddEventDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className=" sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
+      <DialogContent className=" sm:max-w-[500px] max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Dodaj nowy event</DialogTitle>
           <DialogDescription>
@@ -371,7 +371,7 @@ export const AddEventDialog = ({
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
-                    <FormControl>
+                    <FormControl className="w-full max-w-[250px]">
                       <SelectTrigger>
                         <SelectValue placeholder="Wybierz lokalizację" />
                       </SelectTrigger>

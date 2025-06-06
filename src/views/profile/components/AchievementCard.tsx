@@ -33,7 +33,7 @@ export const AchievementCard: React.FC<{ achievement: Achievement }> = ({
         <div className="flex flex-col gap-2 items-center justify-end ">
           <AchievementProgressChart progress={achievement.progress} />
           <Badge variant={"outline"} className=" py-1 bg-background">
-            +{achievement.points} <img src="/src/assets/Tarnowiak.svg" alt="" />
+            +{achievement.points} <img src="/public/Tarnowiak.svg" alt="" />
           </Badge>
         </div>
       </CardContent>

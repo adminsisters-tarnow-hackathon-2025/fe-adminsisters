@@ -29,7 +29,7 @@ export const TarnowiakCard: React.FC<{ redem: Achievement }> = ({ redem }) => {
         </div>
         <div className="flex flex-col gap-2 items-center justify-end ">
           <Badge variant={"outline"} className=" py-1 px-4! w-fit">
-            -{redem.points} <img src="/src/assets/Tarnowiak.svg" alt="" />
+            -{redem.points} <img src="/public/Tarnowiak.svg" alt="" />
           </Badge>
         </div>
       </CardContent>

@@ -19,6 +19,14 @@ export async function loginAsync(name: string, password: string) {
     defaultErrorMessage: "Nie udało się zalogować",
   });
 }
+export async function removeCointsAsync(id: string, amount: number) {
+  return axiosRequest<void, { amount: number }>({
+    url: `api/users/${id}/subtraction-coin`,
+    method: "POST",
+    data: { amount },
+    defaultErrorMessage: "Nie udało się odjąć monet",
+  });
+}
 
 export async function getUserEventsAsync(userId: string) {
   return axiosRequest<ResultObject<Event[]>, void>({

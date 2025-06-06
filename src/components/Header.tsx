@@ -15,13 +15,13 @@ export const Header = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <Link to={RouterUrlEnum.HOME} className="text-lg font-semibold p-2">
-              <img src="/src/assets/LOGO 1.svg" className="w-40" />
+              <img src="/public/LOGO 1.svg" className="w-40" />
             </Link>
           </div>
           <div className="flex items-center space-x-2">
             <Link to={RouterUrlEnum.PROFILE}>
               <Badge variant={"outline"} className=" py-1 bg-background">
-                {userCoins || 0} <img src="/src/assets/Tarnowiak.svg" alt="" />
+                {userCoins || 0} <img src="/public/Tarnowiak.svg" alt="" />
               </Badge>
             </Link>
             <ModeToggle />

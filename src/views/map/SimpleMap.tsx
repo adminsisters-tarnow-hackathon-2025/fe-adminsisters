@@ -103,7 +103,7 @@ function DraggableMarker({
                         variant="link"
                         size="sm"
                         onClick={() => navigate(`/events/${event.id}`)}
-                        className="h-auto p-0 text-blue-600 hover:text-blue-800 text-sm justify-start font-medium"
+                        className="h-auto p-0 text-blue-600 hover:text-blue-800 text-sm justify-start font-medium truncate max-w-[200px]"
                       >
                         {event.name}
                       </Button>
