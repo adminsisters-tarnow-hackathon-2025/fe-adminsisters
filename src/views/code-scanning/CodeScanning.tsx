@@ -28,8 +28,8 @@ export const CodeScanning = () => {
         data: {
           amount: 10,
         },
-        defaultErrorMessage: "Failed to add coins",
-        successMessage: "Coins added successfully",
+        defaultErrorMessage: "Nie udało się dodać monet",
+        successMessage: "Monety zostały dodane pomyślnie",
       });
       dispatch(setCoins((user.user?.data.coinAmount || 0) + 10));
       console.log(user.user?.data.coinAmount);
@@ -40,8 +40,8 @@ export const CodeScanning = () => {
     axiosRequest({
       url: `api/users/${user.user?.data.id}/events/${result}`,
       method: "POST",
-      defaultErrorMessage: "Failed to add user to event",
-      successMessage: "User to event added successfully",
+      defaultErrorMessage: "Nie udało się dodać użytkownika do wydarzenia",
+      successMessage: "Użytkownik został pomyślnie dodany do wydarzenia",
     });
 
     setTimeout(() => {

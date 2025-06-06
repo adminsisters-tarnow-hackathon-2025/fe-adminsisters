@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { selectOpenLoginDialog, setOpenLoginDialog } from "@/store/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { Outlet } from "react-router";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function RootLayout() {
   const dispatch = useDispatch();
@@ -28,6 +29,7 @@ export default function RootLayout() {
           <Footer />
         </div>
       </div>
+      <Toaster />
     </ThemeProvider>
   );
 }

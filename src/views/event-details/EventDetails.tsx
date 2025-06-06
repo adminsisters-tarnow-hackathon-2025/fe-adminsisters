@@ -1,23 +1,24 @@
 import { getEventByIdAsync } from "@/api/events";
 import { Event } from "@/api/events/types";
 import { EventStatusBadge } from "@/components/EventStatusBadge";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Clock, MapPin, Wallet, ArrowLeft } from "lucide-react";
-import { useEffect, useState, useMemo } from "react";
-import { useParams, useNavigate } from "react-router";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { useTheme } from "@/hooks/useTheme";
 import L, { Icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { ArrowLeft, Clock, MapPin, Wallet } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { useNavigate, useParams } from "react-router";
 
 // Fix for default markers in Leaflet with Webpack
 delete (Icon.Default.prototype as unknown as { _getIconUrl: unknown })
@@ -150,19 +151,19 @@ export const EventDetails = () => {
 
   if (!event) {
     return (
-      <div className="text-center py-8">
+      <Button className="text-center py-8">
         <p>Event nie został znaleziony.</p>
         <Button onClick={() => navigate("/")} className="mt-4">
           Powrót do głównej
         </Button>
-      </div>
+      </Button>
     );
   }
 
   return (
     <div className="space-y-6">
       <Button
-        variant="ghost"
+        variant="outline"
         onClick={() => navigate("/")}
         className="flex items-center gap-2"
       >
@@ -228,6 +229,19 @@ export const EventDetails = () => {
             </div>
           </div>
         </CardContent>
+        <CardFooter>
+          <Button
+            className="w-full"
+            onClick={() =>
+              window.open(
+                "https://evently.pl/?gad_source=1&gad_campaignid=17494580808&gbraid=0AAAAAouoRkyiKkMkZQykmW4Xb_gOqaf7c&gclid=CjwKCAjwo4rCBhAbEiwAxhJlCfECd1_GxvQSL7_c-j4qufhZsI8EuBTi7WuSO-0xYLd2S9_K1b9uVhoCSd0QAvD_BwE",
+                "_blank"
+              )
+            }
+          >
+            Zapisz się na wydarzenie
+          </Button>
+        </CardFooter>
       </Card>
 
       <Card>

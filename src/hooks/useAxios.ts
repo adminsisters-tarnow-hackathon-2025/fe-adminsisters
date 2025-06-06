@@ -1,6 +1,7 @@
 import { exceptionHelper } from "@/services/helpers/ExceptionHelper";
 import { AxiosResultObject } from "@/types/models";
 import axios, { AxiosError, AxiosResponse } from "axios";
+import { useNotify } from "./useNotify";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
 
@@ -21,6 +22,7 @@ interface AxiosRequestOptions<TData> {
 export async function axiosRequest<TResponse, TData = void>(
   options: AxiosRequestOptions<TData>
 ) {
+  const notify = useNotify();
   try {
     const headers: Record<string, string> = {};
 
@@ -59,12 +61,12 @@ export async function axiosRequest<TResponse, TData = void>(
       }
     }
     if (options.successMessage) {
-      console.log("Success message:", options.successMessage);
+      notify.success(options.successMessage);
     }
     return result;
   } catch (err) {
     const error = err as AxiosError;
-    exceptionHelper().showExceptionMessage(
+    exceptionHelper(notify).showExceptionMessage(
       error,
       options.defaultErrorMessage,
       options.additionalInternalMessage

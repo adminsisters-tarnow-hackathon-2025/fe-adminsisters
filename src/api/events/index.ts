@@ -6,7 +6,7 @@ export async function getEventsAsync() {
   return await axiosRequest<ResultObject<Event[]>, void>({
     url: "/api/events",
     method: "GET",
-    defaultErrorMessage: "Failed to fetch events.",
+    defaultErrorMessage: "Nie udało się pobrać wydarzeń.",
   });
 }
 
@@ -15,7 +15,7 @@ export async function createEventAsync(data: CreateEvent) {
     url: `/api/events`,
     method: "POST",
     data,
-    defaultErrorMessage: "Failed to create event.",
+    defaultErrorMessage: "Nie udało się utworzyć wydarzenia.",
   });
 }
 
@@ -23,7 +23,7 @@ export async function getEventByIdAsync(id: string) {
   return await axiosRequest<ResultObject<Event>, void>({
     url: `/api/events/${id}`,
     method: "GET",
-    defaultErrorMessage: "Failed to fetch event.",
+    defaultErrorMessage: "Nie udało się pobrać wydarzenia.",
   });
 }
 
@@ -31,6 +31,6 @@ export async function deleteEventAsync(id: string) {
   return await axiosRequest<void, void>({
     url: `/api/events/${id}`,
     method: "DELETE",
-    defaultErrorMessage: "Failed to delete event.",
+    defaultErrorMessage: "Nie udało się usunąć wydarzenia.",
   });
 }

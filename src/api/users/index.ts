@@ -7,7 +7,7 @@ export async function getUsersAsync() {
   return axiosRequest<ResultObject<User[]>, void>({
     url: "api/users",
     method: "GET",
-    defaultErrorMessage: "Failed to fetch users",
+    defaultErrorMessage: "Nie udało się pobrać użytkowników",
   });
 }
 
@@ -16,7 +16,7 @@ export async function loginAsync(name: string, password: string) {
     url: "api/users/login",
     method: "POST",
     data: { name, password },
-    defaultErrorMessage: "Failed to login",
+    defaultErrorMessage: "Nie udało się zalogować",
   });
 }
 
@@ -24,6 +24,6 @@ export async function getUserEventsAsync(userId: string) {
   return axiosRequest<ResultObject<Event[]>, void>({
     url: `api/users/${userId}/events`,
     method: "GET",
-    defaultErrorMessage: "Failed to fetch user events",
+    defaultErrorMessage: "Nie udało się pobrać wydarzeń użytkownika",
   });
 }

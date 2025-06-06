@@ -1,7 +1,11 @@
 import { ExceptionMessage, ExternalException } from "@/types/models";
 import { AxiosError } from "axios";
 
-export function exceptionHelper() {
+interface NotifyFunctions {
+  error: (message: string) => void;
+}
+
+export function exceptionHelper(notify?: NotifyFunctions) {
   function showExceptionMessage(
     error: AxiosError,
     message: string,
@@ -11,7 +15,11 @@ export function exceptionHelper() {
       return;
     }
     if (isExceptionMessage(error.response?.data)) {
-      console.log("Exception message:", error.response.data);
+      if (notify) {
+        notify.error(error.response.data.description);
+      } else {
+        console.log("Exception message:", error.response.data);
+      }
       return;
     }
 
@@ -19,19 +27,29 @@ export function exceptionHelper() {
       const internalMessage = additionalInternalMessage
         ? additionalInternalMessage
         : "";
-      console.log(
-        "External exception:",
-        error.response.data.error.description,
-        internalMessage
-      );
+      if (notify) {
+        notify.error(
+          error.response.data.error.description + " " + internalMessage
+        );
+      } else {
+        console.log(
+          "External exception:",
+          error.response.data.error.description,
+          internalMessage
+        );
+      }
       return;
     }
-    console.log(
-      "Unknown error format:",
-      error.response.data,
-      message,
-      additionalInternalMessage
-    );
+    if (notify) {
+      notify.error(message);
+    } else {
+      console.log(
+        "Unknown error format:",
+        error.response.data,
+        message,
+        additionalInternalMessage
+      );
+    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
