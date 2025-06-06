@@ -1,5 +1,5 @@
 import { axiosRequest } from "@/hooks/useAxios";
-import { CreateLocation, Location } from "./types";
+import { CreateLocation, Location, LocationWithEvents } from "./types";
 import { ResultObject } from "@/types/models";
 
 export async function createLocationAsync(data: CreateLocation) {
@@ -15,6 +15,14 @@ export async function createLocationAsync(data: CreateLocation) {
 export async function getLocationsAsync() {
   return axiosRequest<ResultObject<Location[]>, void>({
     url: "/api/locations",
+    method: "GET",
+    defaultErrorMessage: "Failed to fetch locations",
+    successMessage: "Locations fetched successfully",
+  });
+}
+export async function getLocationsWithEventsAsync() {
+  return axiosRequest<ResultObject<LocationWithEvents[]>, void>({
+    url: "/api/locations/events",
     method: "GET",
     defaultErrorMessage: "Failed to fetch locations",
     successMessage: "Locations fetched successfully",

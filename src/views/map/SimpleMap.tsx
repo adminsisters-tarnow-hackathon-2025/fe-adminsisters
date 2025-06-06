@@ -1,6 +1,7 @@
-import { getLocationsAsync } from "@/api/locations";
+import { deleteLocationAsync, getLocationsAsync } from "@/api/locations";
 import { Location } from "@/api/locations/types";
 import { AddLocationDialog } from "@/components/AddLocationDialog";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -27,9 +28,11 @@ L.Icon.Default.mergeOptions({
 function DraggableMarker({
   location,
   onPositionChange,
+  onDelete,
 }: {
   location: Location;
   onPositionChange: (id: string, pos: [number, number]) => void;
+  onDelete: (id: string) => void;
 }) {
   const markerRef = useRef<L.Marker>(null);
 
@@ -49,6 +52,17 @@ function DraggableMarker({
     [location.id, onPositionChange]
   );
 
+  const handleDelete = async () => {
+    if (confirm(`Czy na pewno chcesz usunąć lokalizację "${location.name}"?`)) {
+      try {
+        await deleteLocationAsync(location.id);
+        onDelete(location.id);
+      } catch (error) {
+        console.error("Failed to delete location:", error);
+      }
+    }
+  };
+
   return (
     <Marker
       eventHandlers={eventHandlers}
@@ -63,7 +77,16 @@ function DraggableMarker({
           <div>
             <span className="font-medium">Adres:</span> {location.address}
           </div>
-          {location.name}
+          <div className="pt-2 border-t">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleDelete}
+              className="w-fit border-destructive/50 text-destructive"
+            >
+              Usuń lokalizację
+            </Button>
+          </div>
         </div>
       </Popup>
     </Marker>
@@ -104,6 +127,10 @@ export const SimpleMap = () => {
     fetchLocations();
   };
 
+  const handleLocationDelete = (id: string) => {
+    setLocations((prev) => prev.filter((location) => location.id !== id));
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -136,6 +163,7 @@ export const SimpleMap = () => {
                 key={location.id}
                 location={location}
                 onPositionChange={updateMarkerPosition}
+                onDelete={handleLocationDelete}
               />
             ))}
           </MapContainer>
