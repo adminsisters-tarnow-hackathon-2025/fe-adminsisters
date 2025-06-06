@@ -4,3 +4,8 @@ export interface User {
   password: string;
   coinAmount: number;
 }
+
+export interface LoginResponse {
+  id: string;
+  isAdmin: boolean;
+}
