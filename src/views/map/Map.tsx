@@ -16,8 +16,8 @@ export const Map = ({ locations }: MapProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Map</CardTitle>
-        <CardDescription>View and interact with the map below.</CardDescription>
+        <CardTitle>Mapa</CardTitle>
+        <CardDescription>Zobacz lokalizacje na mapie.</CardDescription>
       </CardHeader>
       <CardContent>
         <MapComponent locations={locations} />
