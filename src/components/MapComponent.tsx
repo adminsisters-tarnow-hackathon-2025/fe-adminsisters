@@ -1,18 +1,11 @@
 import { useTheme } from "@/hooks/useTheme";
-import { VisLeafletMap } from "@unovis/react";
-import { Locate } from "lucide-react";
-import { useMemo, useState } from "react";
 import { Location } from "@/types/models";
+import { VisLeafletMap } from "@unovis/react";
+import { useMemo, useState } from "react";
 
 type Bounds = {
   northEast: { lat: number; lng: number };
   southWest: { lat: number; lng: number };
-};
-type MapDataRecord = {
-  latitude: number;
-  longitude: number;
-  name: string;
-  address: string;
 };
 
 interface MapComponentProps {
@@ -38,38 +31,19 @@ export const MapComponent = ({
     southWest: { lat: 50.0021, lng: 20.9367 },
   });
 
-  const [defaultPoints] = useState<MapDataRecord[]>([
-    {
-      latitude: 50.05,
-      longitude: 20.95,
-      name: "Chuj",
-      address: "Sample address 1",
-    },
-    {
-      latitude: 50.07,
-      longitude: 20.98,
-      name: "School",
-      address: "Sample address 2",
-    },
-    {
-      latitude: 50.07,
-      longitude: 20.99,
-      name: "Hospital",
-      address: "Sample address 3",
-    },
-  ] as const);
-
   const mapData = useMemo(() => {
     if (locations && locations.length > 0) {
-      return locations.map((location) => ({
-        latitude: parseFloat(location.latitude?.toString() || "0"),
-        longitude: parseFloat(location.longitude?.toString() || "0"),
-        name: location.name,
-        address: location.address,
-      }));
+      return locations
+        .filter((location) => location.latitude && location.longitude)
+        .map((location) => ({
+          latitude: parseFloat(location.latitude?.toString() || "0"),
+          longitude: parseFloat(location.longitude?.toString() || "0"),
+          name: location.name,
+          address: location.address,
+        }));
     }
-    return defaultPoints;
-  }, [locations, defaultPoints]);
+    return [];
+  }, [locations]);
 
   const bounds = useMemo(() => {
     if (showSingleLocation && locations && locations.length === 1) {
@@ -110,11 +84,6 @@ export const MapComponent = ({
           pointShape="ring"
           data={mapData}
         />
-        {!showSingleLocation && (
-          <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-            <Locate className="size-10 text-secondary-foreground drop-shadow-lg" />
-          </div>
-        )}
       </div>
     </>
   );

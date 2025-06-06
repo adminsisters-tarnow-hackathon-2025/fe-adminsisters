@@ -2,6 +2,7 @@ import { getEventsAsync } from "@/api/events";
 import { Event } from "@/api/events/types";
 import { EventCard } from "@/components/EventCard";
 import { EventCardSkeleton } from "@/components/EventCardSkeleton";
+import { EventMapComponent } from "@/components/EventMapComponent";
 import { useEffect, useState } from "react";
 
 export default function Home() {
@@ -50,6 +51,7 @@ export default function Home() {
   return (
     <>
       <div className="space-y-6">
+        {/* <EventMapComponent events={events} /> */}
         {events.map((event, i) => (
           <EventCard event={event} key={i} />
         ))}

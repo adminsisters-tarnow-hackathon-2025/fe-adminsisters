@@ -18,3 +18,19 @@ export async function createEventAsync(data: CreateEvent) {
     defaultErrorMessage: "Failed to create event.",
   });
 }
+
+export async function getEventByIdAsync(id: string) {
+  return await axiosRequest<ResultObject<Event>, void>({
+    url: `/api/events/${id}`,
+    method: "GET",
+    defaultErrorMessage: "Failed to fetch event.",
+  });
+}
+
+export async function deleteEventAsync(id: string) {
+  return await axiosRequest<void, void>({
+    url: `/api/events/${id}`,
+    method: "DELETE",
+    defaultErrorMessage: "Failed to delete event.",
+  });
+}

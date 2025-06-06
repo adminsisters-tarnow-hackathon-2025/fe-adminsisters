@@ -6,16 +6,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Location } from "@/types/models";
 
-export const Map = () => {
+interface MapProps {
+  locations?: Location[];
+}
+
+export const Map = ({ locations }: MapProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Map</CardTitle>
-        <CardDescription>View and interact with the map below.</CardDescription>
+        <CardTitle>Mapa</CardTitle>
+        <CardDescription>Zobacz lokalizacje na mapie.</CardDescription>
       </CardHeader>
       <CardContent>
-        <MapComponent />
+        <MapComponent locations={locations} />
       </CardContent>
     </Card>
   );

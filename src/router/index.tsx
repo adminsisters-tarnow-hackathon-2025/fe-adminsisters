@@ -1,6 +1,7 @@
 import RootLayout from "@/layouts/RootLayout";
 import { RouterUrlEnum } from "@/types/enums/RouterUrlEnum";
 import { CodeScanning } from "@/views/code-scanning/CodeScanning";
+import { EventDetails } from "@/views/event-details/EventDetails";
 import Home from "@/views/home/Home";
 import { Map } from "@/views/map/Map";
 import NotFound from "@/views/not-found/NotFound";
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
       {
         path: RouterUrlEnum.SCAN_QR,
         element: <CodeScanning />,
+      },
+      {
+        path: "events/:id",
+        element: <EventDetails />,
       },
     ],
   },

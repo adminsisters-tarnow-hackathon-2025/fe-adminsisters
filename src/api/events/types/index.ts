@@ -7,6 +7,7 @@ export interface Event {
   coinReward: number;
   dateFrom: string;
   dateTo: string;
+  type: string;
   location: EventLocation;
 }
 
@@ -14,6 +15,8 @@ export interface EventLocation {
   id: string;
   name: string;
   address: string;
+  latitude: number;
+  longitude: number;
 }
 
 export interface CreateEvent {

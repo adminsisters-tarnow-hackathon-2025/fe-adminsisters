@@ -2,6 +2,7 @@ import { createEventAsync } from "@/api/events";
 import { CreateEvent } from "@/api/events/types";
 import { getLocationsAsync } from "@/api/locations";
 import { Location } from "@/api/locations/types";
+import { EVENT_CATEGORIES } from "@/types/consts";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -233,12 +234,23 @@ export const AddEventDialog = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Typ eventu</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="np. warsztat, konferencja, spotkanie"
-                      {...field}
-                    />
-                  </FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Wybierz typ eventu" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {EVENT_CATEGORIES.map((category) => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
