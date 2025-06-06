@@ -14,6 +14,20 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Clock, MapPin, Wallet, ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+
+// Fix for default markers in Leaflet with Webpack
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
+  iconUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
+});
 
 const getEventStatus = (event: Event) => {
   const now = new Date();
@@ -185,8 +199,34 @@ export const EventDetails = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="text-muted-foreground">
-            Adres: {event.location.address}
+          <div className="space-y-4">
+            <div className="text-muted-foreground">
+              Adres: {event.location.address}
+            </div>
+            <div className="w-full h-[300px] rounded-md overflow-hidden border">
+              <MapContainer
+                center={[event.location.latitude, event.location.longitude]}
+                zoom={15}
+                className="w-full h-full"
+              >
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                <Marker
+                  position={[event.location.latitude, event.location.longitude]}
+                >
+                  <Popup>
+                    <div className="space-y-1">
+                      <div className="font-semibold">{event.location.name}</div>
+                      <div className="text-sm text-muted-foreground">
+                        {event.location.address}
+                      </div>
+                    </div>
+                  </Popup>
+                </Marker>
+              </MapContainer>
+            </div>
           </div>
         </CardContent>
       </Card>
