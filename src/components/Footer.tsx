@@ -13,7 +13,7 @@ export const Footer = () => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const dispatch = useDispatch();
 
-  const isAdmin = true;
+  const isAdmin = false;
 
   const [isOpenAddEventDialog, setIsOpenAddEventDialog] = useState(false);
 
@@ -35,27 +35,27 @@ export const Footer = () => {
             <p>Bilety</p>
           </div>
           <div className="rounded-full bg-secondary-foreground p-4">
-            {isAdmin ? (
-              <Plus
-                className="text-secondary"
-                onClick={() => setIsOpenAddEventDialog(true)}
-              />
-            ) : (
-              <Link
-            to={RouterUrlEnum.SCAN_QR}
-            onClick={(e) => {
-              if (!isLoggedIn) {
-                e.preventDefault();
-                dispatch(checkAuthAndPromptLogin());
-
-                return;
-              }
-            }}
-            className="rounded-full bg-secondary-foreground p-4"
-          >
-            <ScanQrCode className="text-secondary" />
-          </Link>
-            )}
+            <Link
+              to={isAdmin ? "#" : RouterUrlEnum.SCAN_QR}
+              onClick={(e) => {
+                if (isAdmin) {
+                  e.preventDefault();
+                  setIsOpenAddEventDialog(true);
+                  return;
+                }
+                if (!isLoggedIn) {
+                  e.preventDefault();
+                  dispatch(checkAuthAndPromptLogin());
+                  return;
+                }
+              }}
+            >
+              {isAdmin ? (
+                <Plus className="text-secondary" />
+              ) : (
+                <ScanQrCode className="text-secondary" />
+              )}
+            </Link>
           </div>
           <Link
             to={RouterUrlEnum.PROFILE}
