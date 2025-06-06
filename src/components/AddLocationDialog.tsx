@@ -18,10 +18,24 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
 import { z } from "zod";
 import { Input } from "./ui/input";
+
+// Fix for default markers in Leaflet with Webpack
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
+  iconUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
+});
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -44,10 +58,26 @@ interface AddLocationDialogProps {
   onLocationAdded?: () => void;
 }
 
+function MapClickHandler({
+  onMapClick,
+}: {
+  onMapClick: (latlng: [number, number]) => void;
+}) {
+  useMapEvents({
+    click(e) {
+      onMapClick([e.latlng.lat, e.latlng.lng]);
+    },
+  });
+  return null;
+}
+
 export const AddLocationDialog = ({
   onLocationAdded,
 }: AddLocationDialogProps) => {
   const [open, setOpen] = useState(false);
+  const [selectedPosition, setSelectedPosition] = useState<
+    [number, number] | null
+  >(null);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -58,6 +88,14 @@ export const AddLocationDialog = ({
       longitude: 0,
     },
   });
+
+  // Update form when selectedPosition changes
+  useEffect(() => {
+    if (selectedPosition && open) {
+      form.setValue("latitude", selectedPosition[0]);
+      form.setValue("longitude", selectedPosition[1]);
+    }
+  }, [selectedPosition, open, form]);
 
   const { isSubmitting } = form.formState;
 
@@ -86,6 +124,12 @@ export const AddLocationDialog = ({
     }
   };
 
+  const handleMapClick = (position: [number, number]) => {
+    setSelectedPosition(position);
+    form.setValue("latitude", position[0]);
+    form.setValue("longitude", position[1]);
+  };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -96,13 +140,31 @@ export const AddLocationDialog = ({
           Dodaj lokalizację
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[600px] z-[10000] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Dodaj nową lokalizację</DialogTitle>
           <DialogDescription>
-            Wprowadź szczegóły dotyczące nowej lokalizacji.
+            Kliknij na mapie aby wybrać lokalizację lub wprowadź współrzędne
+            ręcznie.
           </DialogDescription>
         </DialogHeader>
+
+        {/* Map for selecting location */}
+        <div className="mb-4">
+          <MapContainer
+            center={selectedPosition || [52.237049, 21.017532]}
+            zoom={13}
+            className="w-full h-[300px] rounded-md overflow-hidden border"
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <MapClickHandler onMapClick={handleMapClick} />
+            {selectedPosition && <Marker position={selectedPosition} />}
+          </MapContainer>
+        </div>
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
