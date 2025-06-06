@@ -176,7 +176,7 @@ export const SimpleMap = () => {
           <Label className="text-sm font-medium">
             Filtruj po dacie wydarzeń:
           </Label>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-2">
             <div className="space-y-1">
               <Label
                 htmlFor="dateFrom"
@@ -189,7 +189,7 @@ export const SimpleMap = () => {
                 type="datetime-local"
                 value={dateFrom}
                 onChange={(e) => setDateFrom(e.target.value)}
-                className="text-sm"
+                className="text-sm w-fit"
               />
             </div>
             <div className="space-y-1">
@@ -201,7 +201,7 @@ export const SimpleMap = () => {
                 type="datetime-local"
                 value={dateTo}
                 onChange={(e) => setDateTo(e.target.value)}
-                className="text-sm"
+                className="text-sm w-fit"
               />
             </div>
           </div>
