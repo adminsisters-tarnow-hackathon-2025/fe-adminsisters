@@ -52,6 +52,19 @@ const formatPolishDateTime = (dateString: string) => {
   });
 };
 
+const getImageSrc = (event: Event) => {
+  if (event.image) {
+    // If image is base64 encoded
+    if (event.image.startsWith("data:")) {
+      return event.image;
+    }
+    // If image is a URL
+    return event.image;
+  }
+  // Fallback to random image
+  return `https://picsum.photos/800/400?random=${event.id || Math.random()}`;
+};
+
 export const EventDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -163,9 +176,7 @@ export const EventDetails = () => {
           className="bg-muted rounded-md overflow-hidden mx-6"
         >
           <img
-            src={`https://picsum.photos/800/400?random=${
-              event.id || Math.random()
-            }`}
+            src={getImageSrc(event)}
             alt={event.name}
             className="object-cover w-full h-full"
             loading="lazy"
@@ -242,13 +253,18 @@ export const EventDetails = () => {
                 <Marker
                   position={[event.location.latitude, event.location.longitude]}
                 >
-                  <Popup>
-                    <div className="space-y-1">
-                      <div className="font-semibold">{event.location.name}</div>
-                      <div className="text-sm text-muted-foreground">
-                        {event.location.address}
-                      </div>
-                    </div>
+                  <Popup minWidth={280} className="leaflet-popup-card ">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-base flex items-center gap-2">
+                          <MapPin className="size-4 text-primary" />
+                          {event.location.name}
+                        </CardTitle>
+                        <CardDescription className="text-sm">
+                          {event.location.address}
+                        </CardDescription>
+                      </CardHeader>
+                    </Card>
                   </Popup>
                 </Marker>
               </MapContainer>

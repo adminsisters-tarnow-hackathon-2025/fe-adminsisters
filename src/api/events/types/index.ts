@@ -9,6 +9,7 @@ export interface Event {
   dateTo: string;
   type: string;
   location: EventLocation;
+  image?: string; // Base64 encoded image or URL
 }
 
 export interface EventLocation {
@@ -30,4 +31,5 @@ export interface CreateEvent {
   dateFrom: string;
   dateTo: string;
   locationId: string;
+  image?: string; // Base64 encoded image string
 }

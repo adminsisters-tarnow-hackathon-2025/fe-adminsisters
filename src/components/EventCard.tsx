@@ -55,6 +55,19 @@ export const EventCard: React.FC<{ event: Event }> = ({ event }) => {
     navigate(`/events/${event.id}`);
   };
 
+  const getImageSrc = () => {
+    if (event.image) {
+      // If image is base64 encoded
+      if (event.image.startsWith("data:")) {
+        return event.image;
+      }
+      // If image is a URL
+      return event.image;
+    }
+    // Fallback to random image
+    return `https://picsum.photos/800/400?random=${event.id || Math.random()}`;
+  };
+
   return (
     <>
       <Card className="w-full h-full">
@@ -63,9 +76,7 @@ export const EventCard: React.FC<{ event: Event }> = ({ event }) => {
           className="bg-muted rounded-md overflow-hidden mx-6"
         >
           <img
-            src={`https://picsum.photos/800/400?random=${
-              event.id || Math.random()
-            }`}
+            src={getImageSrc()}
             alt={event.name}
             className="object-cover w-full h-full"
             loading="lazy"

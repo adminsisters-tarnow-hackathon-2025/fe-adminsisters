@@ -49,7 +49,6 @@ const formSchema = z.object({
   coinReward: z.coerce.number().min(0, {
     message: "Nagroda w monetach musi być większa lub równa 0.",
   }),
-
   type: z.string().min(1, {
     message: "Typ eventu jest wymagany.",
   }),
@@ -65,6 +64,7 @@ const formSchema = z.object({
   locationId: z.string().min(1, {
     message: "Lokalizacja jest wymagana.",
   }),
+  image: z.instanceof(File).optional().or(z.literal("")),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -81,6 +81,7 @@ export const AddEventDialog = ({
   onEventAdded,
 }: AddEventDialogProps) => {
   const [locations, setLocations] = useState<Location[]>([]);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -95,6 +96,7 @@ export const AddEventDialog = ({
       dateFrom: "",
       dateTo: "",
       locationId: "",
+      image: "",
     },
   });
 
@@ -112,9 +114,24 @@ export const AddEventDialog = ({
     await createEventAsync(data);
   };
 
+  const convertFileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        resolve(reader.result as string);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
   const onSubmit = async (values: FormData) => {
     try {
-      // Convert File to byte array
+      let image: string | undefined;
+
+      if (values.image && values.image instanceof File) {
+        image = await convertFileToBase64(values.image);
+      }
 
       const createEventData: CreateEvent = {
         name: values.name,
@@ -130,6 +147,7 @@ export const AddEventDialog = ({
         dateFrom: values.dateFrom,
         dateTo: values.dateTo,
         locationId: values.locationId,
+        image,
       };
 
       console.log(values.dateFrom);
@@ -139,17 +157,31 @@ export const AddEventDialog = ({
 
       onOpenChange?.(false);
       form.reset();
+      setImagePreview(null);
       onEventAdded?.();
     } catch (error) {
       console.error(error);
       onOpenChange?.(false);
       form.reset();
+      setImagePreview(null);
+    }
+  };
+
+  const handleImageChange = (file: File | null) => {
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setImagePreview(null);
     }
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
+      <DialogContent className=" sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Dodaj nowy event</DialogTitle>
           <DialogDescription>
@@ -167,6 +199,36 @@ export const AddEventDialog = ({
                   <FormControl>
                     <Input placeholder="Wprowadź nazwę eventu" {...field} />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="image"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Zdjęcie eventu</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0] || null;
+                        field.onChange(file);
+                        handleImageChange(file);
+                      }}
+                    />
+                  </FormControl>
+                  {imagePreview && (
+                    <div className="mt-2">
+                      <img
+                        src={imagePreview}
+                        alt="Podgląd"
+                        className="w-full h-32 object-cover rounded-md"
+                      />
+                    </div>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}
