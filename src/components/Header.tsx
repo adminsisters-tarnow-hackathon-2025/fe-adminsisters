@@ -1,11 +1,9 @@
+import { selectUser } from "@/store/userSlice";
 import { RouterUrlEnum } from "@/types/enums/RouterUrlEnum";
+import { useSelector } from "react-redux";
 import { Link } from "react-router";
 import { ModeToggle } from "./ModeToggle";
 import { Badge } from "./ui/badge";
-import { Button } from "./ui/button";
-import { useSelector } from "react-redux";
-import { selectUser } from "@/store/userSlice";
-
 
 export const Header = () => {
   const userCoins = useSelector(selectUser).user?.data.coinAmount;
@@ -20,12 +18,15 @@ export const Header = () => {
               <img src="/src/assets/LOGO 1.svg" className="w-40" />
             </Link>
           </div>
-          <div className="flex items-center space-x-2">
+          <Link
+            to={RouterUrlEnum.PROFILE}
+            className="flex items-center space-x-2"
+          >
             <Badge variant={"outline"} className=" py-1 bg-background">
               {userCoins || 0} <img src="/src/assets/Tarnowiak.svg" alt="" />
             </Badge>
             <ModeToggle />
-          </div>
+          </Link>
         </div>
       </nav>
     </>
