@@ -13,24 +13,25 @@ export const UserProfile = () => {
   const achievements = [
     {
       id: "1",
-      title: "Achievement Title",
-      description: "Description of the achievement goes here.",
+      title: "Debiutant Miejski",
+      description: "Weź udział w swoim pierwszym wydarzeniu w Tarnowie.",
       badgeImage: "/src/assets/Badge1 1.svg",
       points: 20,
       progress: 50,
     },
     {
       id: "2",
-      title: "Another Achievement",
-      description: "This is another achievement description.",
+      title: "Kulturalny Bywalec",
+      description: "Odwiedź 5 wydarzeń kulturalnych (koncert, wystawa, teatr).",
       badgeImage: "/src/assets/Badge3 1.svg",
       points: 50,
       progress: 75,
     },
     {
       id: "3",
-      title: "Another Achievement",
-      description: "This is another achievement description.",
+      title: "Społeczny Tarnowianin",
+      description:
+        "Weź udział w 3 wydarzeniach społecznych lub charytatywnych.",
       badgeImage: "/src/assets/Badge5 1.svg",
       points: 50,
       progress: 75,
@@ -78,8 +79,8 @@ export const UserProfile = () => {
       <TabsContent value="achievements">
         <Card className="w-full">
           <CardHeader>
-            <CardTitle>Profile</CardTitle>
-            <CardDescription>Manage your profile settings.</CardDescription>
+            <CardTitle>Twoje osiągnięcia</CardTitle>
+            <CardDescription>Przeglądaj swoje osiągnięcia</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {achievements.map((achievement) => (
@@ -91,8 +92,10 @@ export const UserProfile = () => {
       <TabsContent value="points">
         <Card className="w-full">
           <CardHeader>
-            <CardTitle>Settings</CardTitle>
-            <CardDescription>Adjust your account settings.</CardDescription>
+            <CardTitle>Wydaj Tarnowiaki</CardTitle>
+            <CardDescription>
+              Wydaj swoje Tarnowiaki na nagrody i zniżki w Tarnowie.
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {TarnowiakRedems.map((redem) => (

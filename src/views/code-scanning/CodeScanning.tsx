@@ -31,9 +31,8 @@ export const CodeScanning = () => {
         defaultErrorMessage: "Failed to add coins",
         successMessage: "Coins added successfully",
       });
-      dispatch(setCoins(user.user?.data.coinAmount ?? 0 + 10));
-      alert(response);
-      // user.user?.data.coinAmount = response.data;
+      dispatch(setCoins((user.user?.data.coinAmount || 0) + 10));
+      console.log(user.user?.data.coinAmount);
     }
 
     handleScane();
