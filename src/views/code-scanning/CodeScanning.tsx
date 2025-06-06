@@ -21,7 +21,7 @@ export const CodeScanning = () => {
     setScanned(result);
 
     axiosRequest<void, { amount: number }>({
-      url: `api/users/019741a0-1a86-7f80-ba5e-ad64a0c493c6/add-coin`,
+      url: `api/users/${user.user?.data.id}/add-coin`,
       method: "POST",
       data: {
         amount: 1,
@@ -31,14 +31,15 @@ export const CodeScanning = () => {
     });
 
     axiosRequest({
-      url: `api/users/${user?.id}/events/${result}`,
+      url: `api/users/${user.user?.data.id}/events/${result}`,
       method: "POST",
       defaultErrorMessage: "Failed to add user to event",
       successMessage: "User to event added successfully",
     });
 
     setTimeout(() => {
-      navigate("/events/" + result);
+      // navigate("/events/" + result);
+      navigate("/");
     }, 3000);
   };
 
