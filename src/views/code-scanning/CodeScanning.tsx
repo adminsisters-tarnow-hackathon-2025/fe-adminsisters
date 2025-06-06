@@ -1,0 +1,74 @@
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { axiosRequest } from "@/hooks/useAxios";
+import { selectUser } from "@/store/userSlice";
+import { Scanner } from "@yudiel/react-qr-scanner";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router";
+export const CodeScanning = () => {
+  const user = useSelector(selectUser);
+  // const isLoggedIn = useSelector(selectIsLoggedIn);
+  const navigate = useNavigate();
+  const [scanned, setScanned] = useState<string | null>();
+
+  const handleScan = (result: string) => {
+    setScanned(result);
+
+    axiosRequest<void, { amount: number }>({
+      url: `api/users/019741a0-1a86-7f80-ba5e-ad64a0c493c6/add-coin`,
+      method: "POST",
+      data: {
+        amount: 1,
+      },
+      defaultErrorMessage: "Failed to add coins",
+      successMessage: "Coins added successfully",
+    });
+
+    axiosRequest({
+      url: `api/users/${user?.id}/events/${result}`,
+      method: "POST",
+      defaultErrorMessage: "Failed to add user to event",
+      successMessage: "User to event added successfully",
+    });
+
+    setTimeout(() => {
+      navigate("/events/" + result);
+    }, 3000);
+  };
+
+  return (
+    <>
+      {
+        <Card className="w-full">
+          <CardHeader>
+            <CardTitle>Skanowanie kodu imprezy</CardTitle>
+            <CardDescription>
+              Znajdź kod imprezy i zeskanuj go, aby otrzymać nagrodę.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Scanner
+              paused={!!scanned}
+              classNames={{
+                container: "rounded-md",
+              }}
+              onScan={(result) => handleScan(result[0].rawValue)}
+            />
+            {scanned && (
+              <div className="text-center text-green-500">
+                Pomyślnie zeskanowano kod, nagroda zostanie przyznana.
+                Przekierowywanie...
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      }
+    </>
+  );
+};
