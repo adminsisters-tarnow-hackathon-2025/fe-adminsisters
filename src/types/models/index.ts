@@ -26,3 +26,11 @@ export interface ExternalException {
 export interface ResultObject<T> {
   data: T;
 }
+
+export interface Location {
+  id: string;
+  name: string;
+  address: string;
+  latitude?: number;
+  longitude?: number;
+}

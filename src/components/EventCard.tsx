@@ -25,6 +25,17 @@ const getEventStatus = (event: Event) => {
   return "planned";
 };
 
+const formatPolishDateTime = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleString("pl-PL", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
 export const EventCard: React.FC<{ event: Event }> = ({ event }) => {
   const [isLiked, setIsLiked] = useState(false);
   const dispatch = useDispatch();
@@ -45,7 +56,14 @@ export const EventCard: React.FC<{ event: Event }> = ({ event }) => {
           ratio={2 / 1}
           className="bg-muted rounded-md overflow-hidden mx-6"
         >
-          <img src={event.image ? event.image : "/src/assets/event.png"} />
+          <img
+            src={`https://picsum.photos/800/400?random=${
+              event.id || Math.random()
+            }`}
+            alt={event.name}
+            className="object-cover w-full h-full"
+            loading="lazy"
+          />
         </AspectRatio>
         <CardHeader className="space-y-2">
           <CardTitle className="flex items-center gap-2">
@@ -61,8 +79,12 @@ export const EventCard: React.FC<{ event: Event }> = ({ event }) => {
               <div className="text-secondary-foreground">
                 <Clock className="size-4 text-primary" />
                 <div className="flex flex-col">
-                  {event.dateFrom && <span>od: {event.dateFrom}</span>}
-                  {event.dateTo && <span>do: {event.dateTo}</span>}
+                  {event.dateFrom && (
+                    <span>od: {formatPolishDateTime(event.dateFrom)}</span>
+                  )}
+                  {event.dateTo && (
+                    <span>do: {formatPolishDateTime(event.dateTo)}</span>
+                  )}
                 </div>
               </div>
               <div className="text-secondary-foreground">

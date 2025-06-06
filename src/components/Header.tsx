@@ -17,6 +17,9 @@ export const Header = () => {
               <Button variant="ghost" asChild>
                 <Link to={RouterUrlEnum.MAP}>Map</Link>
               </Button>
+              <Button variant="ghost" asChild>
+                <Link to={RouterUrlEnum.TEMP}>temp</Link>
+              </Button>
             </div>
           </div>
           <div className="flex items-center space-x-2">

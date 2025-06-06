@@ -1,8 +1,10 @@
 import { checkAuthAndPromptLogin, selectIsLoggedIn } from "@/store/userSlice";
 import { RouterUrlEnum } from "@/types/enums";
-import { ScanQrCode, Ticket, User } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
+import { Plus, ScanQrCode, Ticket, User } from "lucide-react";
+import { useState } from "react";
 import { Link, useLocation } from "react-router";
+import { AddEventDialog } from "./AddEventDialog";
 
 export const Footer = () => {
   const location = useLocation();
@@ -10,6 +12,15 @@ export const Footer = () => {
   const isActive = (path: string) => location.pathname === path;
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const dispatch = useDispatch();
+
+  const isAdmin = true;
+
+  const [isOpenAddEventDialog, setIsOpenAddEventDialog] = useState(false);
+
+  const handleEventAdded = () => {
+    // Trigger a custom event to notify Home component
+    window.dispatchEvent(new CustomEvent("eventAdded"));
+  };
 
   return (
     <>
@@ -23,7 +34,14 @@ export const Footer = () => {
             <Ticket />
             <p>Bilety</p>
           </div>
-          <Link
+          <div className="rounded-full bg-secondary-foreground p-4">
+            {isAdmin ? (
+              <Plus
+                className="text-secondary"
+                onClick={() => setIsOpenAddEventDialog(true)}
+              />
+            ) : (
+              <Link
             to={RouterUrlEnum.SCAN_QR}
             onClick={(e) => {
               if (!isLoggedIn) {
@@ -37,6 +55,8 @@ export const Footer = () => {
           >
             <ScanQrCode className="text-secondary" />
           </Link>
+            )}
+          </div>
           <Link
             to={RouterUrlEnum.PROFILE}
             className="rounded-full flex flex-col items-center p-2 w-full"
@@ -58,6 +78,11 @@ export const Footer = () => {
           </Link>
         </div>
       </nav>
+      <AddEventDialog
+        open={isOpenAddEventDialog}
+        onOpenChange={setIsOpenAddEventDialog}
+        onEventAdded={handleEventAdded}
+      />
     </>
   );
 };

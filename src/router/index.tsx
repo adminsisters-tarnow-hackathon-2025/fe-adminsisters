@@ -1,3 +1,4 @@
+import { AddLocationDialog } from "@/components/AddLocationDialog";
 import RootLayout from "@/layouts/RootLayout";
 import { RouterUrlEnum } from "@/types/enums/RouterUrlEnum";
 import { CodeScanning } from "@/views/code-scanning/CodeScanning";
