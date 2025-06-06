@@ -1,12 +1,17 @@
 import { RouterUrlEnum } from "@/types/enums";
-import { ScanQrCode, Ticket, User } from "lucide-react";
+import { Plus, ScanQrCode, Ticket, User } from "lucide-react";
+import { useState } from "react";
 import { Link, useLocation } from "react-router";
+import { AddEventDialog } from "./AddEventDialog";
 
 export const Footer = () => {
   const location = useLocation();
 
   const isActive = (path: string) => location.pathname === path;
 
+  const isAdmin = true;
+
+  const [isOpenAddEventDialog, setIsOpenAddEventDialog] = useState(false);
   return (
     <>
       <nav className="border-b py-2 px-4 border-t">
@@ -20,7 +25,14 @@ export const Footer = () => {
             <p>Bilety</p>
           </div>
           <div className="rounded-full bg-secondary-foreground p-4">
-            <ScanQrCode className="text-secondary" />
+            {isAdmin ? (
+              <Plus
+                className="text-secondary"
+                onClick={() => setIsOpenAddEventDialog(true)}
+              />
+            ) : (
+              <ScanQrCode className="text-secondary" />
+            )}
           </div>
           <Link
             to={RouterUrlEnum.PROFILE}
@@ -43,6 +55,10 @@ export const Footer = () => {
           </Link>
         </div>
       </nav>
+      <AddEventDialog
+        open={isOpenAddEventDialog}
+        onOpenChange={setIsOpenAddEventDialog}
+      />
     </>
   );
 };

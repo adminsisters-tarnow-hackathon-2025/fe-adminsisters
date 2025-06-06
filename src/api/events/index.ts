@@ -11,7 +11,7 @@ export async function getPostsAsync() {
 
 export async function createEventAsync(data: CreateEvent) {
   return await axiosRequest<void, CreateEvent>({
-    url: "/api/events",
+    url: `/api/events`,
     method: "POST",
     data,
     defaultErrorMessage: "Failed to create event.",

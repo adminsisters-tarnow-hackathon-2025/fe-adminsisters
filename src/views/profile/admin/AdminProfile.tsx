@@ -70,7 +70,7 @@ export const AdminProfile = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <AddEventDialog />
+            <AddEventDialog onEventAdded={fetchLocations} />
           </CardContent>
         </Card>
       </TabsContent>

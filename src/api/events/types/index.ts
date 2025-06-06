@@ -23,7 +23,9 @@ export interface CreateEvent {
   longDescription: string;
   price: number;
   coinReward: number;
-  image: string;
+  image: number[];
+  type: string;
+  tags: string[];
   dateFrom: string;
   dateTo: string;
   locationId: string;

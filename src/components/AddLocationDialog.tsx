@@ -43,7 +43,7 @@ export const AddLocationDialog = ({
   onLocationAdded,
 }: AddLocationDialogProps) => {
   const [open, setOpen] = useState(false);
-  const [coordinates, setCoordinates] = useState<{
+  const [, setCoordinates] = useState<{
     longitude: number;
     latitude: number;
   }>({

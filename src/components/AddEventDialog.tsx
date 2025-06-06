@@ -9,7 +9,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -49,8 +48,14 @@ const formSchema = z.object({
   coinReward: z.coerce.number().min(0, {
     message: "Nagroda w monetach musi być większa lub równa 0.",
   }),
-  image: z.string().url({
-    message: "Podaj prawidłowy URL obrazu.",
+  image: z.instanceof(File, {
+    message: "Plik obrazu jest wymagany.",
+  }),
+  type: z.string().min(1, {
+    message: "Typ eventu jest wymagany.",
+  }),
+  tags: z.string().min(1, {
+    message: "Tagi są wymagane.",
   }),
   dateFrom: z.string().min(1, {
     message: "Data rozpoczęcia jest wymagana.",
@@ -65,8 +70,17 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
-export const AddEventDialog = () => {
-  const [open, setOpen] = useState(false);
+interface AddEventDialogProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  onEventAdded?: () => void;
+}
+
+export const AddEventDialog = ({
+  open = false,
+  onOpenChange,
+  onEventAdded,
+}: AddEventDialogProps) => {
   const [locations, setLocations] = useState<Location[]>([]);
 
   const form = useForm<FormData>({
@@ -77,7 +91,9 @@ export const AddEventDialog = () => {
       longDescription: "",
       price: 0,
       coinReward: 0,
-      image: "",
+      image: undefined,
+      type: "",
+      tags: "",
       dateFrom: "",
       dateTo: "",
       locationId: "",
@@ -100,34 +116,43 @@ export const AddEventDialog = () => {
 
   const onSubmit = async (values: FormData) => {
     try {
+      // Convert File to byte array
+      const imageBuffer = await values.image.arrayBuffer();
+      const imageByteArray = Array.from(new Uint8Array(imageBuffer));
+
       const createEventData: CreateEvent = {
         name: values.name,
         shortDescription: values.shortDescription,
         longDescription: values.longDescription,
         price: values.price,
         coinReward: values.coinReward,
-        image: values.image,
+        image: imageByteArray,
+        type: values.type,
+        tags: values.tags
+          .split(",")
+          .map((tag) => tag.trim())
+          .filter((tag) => tag.length > 0),
         dateFrom: values.dateFrom,
         dateTo: values.dateTo,
         locationId: values.locationId,
       };
 
+      console.log("Image byte array length:", imageByteArray.length);
+
       await handleCreateEvent(createEventData);
 
-      setOpen(false);
+      onOpenChange?.(false);
       form.reset();
+      onEventAdded?.();
     } catch (error) {
       console.error(error);
-      setOpen(false);
+      onOpenChange?.(false);
       form.reset();
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline">Dodaj event</Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Dodaj nowy event</DialogTitle>
@@ -210,12 +235,50 @@ export const AddEventDialog = () => {
             <FormField
               control={form.control}
               name="image"
-              render={({ field }) => (
+              render={({ field: { onChange, name, ref } }) => (
                 <FormItem>
-                  <FormLabel>URL obrazu</FormLabel>
+                  <FormLabel>Obraz</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="https://example.com/image.jpg"
+                      type="file"
+                      accept="image/*"
+                      name={name}
+                      ref={ref}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        onChange(file);
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Typ eventu</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="np. warsztat, konferencja, spotkanie"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="tags"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tagi</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="technologia, networking, biznes (oddziel przecinkami)"
                       {...field}
                     />
                   </FormControl>
