@@ -1,4 +1,8 @@
-import { checkAuthAndPromptLogin, selectIsLoggedIn } from "@/store/userSlice";
+import {
+  checkAuthAndPromptLogin,
+  selectIsLoggedIn,
+  selectUser,
+} from "@/store/userSlice";
 import { RouterUrlEnum } from "@/types/enums";
 import { useDispatch, useSelector } from "react-redux";
 import { Plus, ScanQrCode, Ticket, User } from "lucide-react";
@@ -11,9 +15,11 @@ export const Footer = () => {
 
   const isActive = (path: string) => location.pathname === path;
   const isLoggedIn = useSelector(selectIsLoggedIn);
+  const isAdmin = useSelector(selectUser).user?.data.isAdmin || false;
+
+  console.log(useSelector(selectUser));
   const dispatch = useDispatch();
 
-  const isAdmin = true;
 
   const [isOpenAddEventDialog, setIsOpenAddEventDialog] = useState(false);
 

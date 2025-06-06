@@ -1,11 +1,22 @@
-import { User } from "@/api/users/types";
-import { createSlice } from "@reduxjs/toolkit";
+import { loginAsync } from "@/api/users";
+import { LoginResponse } from "@/api/users/types";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 interface UserState {
   isLoggedIn: boolean;
   openLoginDialog: boolean;
-  user: User | null;
+  user: LoginResponse | null;
+  isAdmin?: boolean;
 }
+
+// Thunk do logowania
+export const loginThunk = createAsyncThunk(
+  "user/loginThunk",
+  async ({ name, password }: { name: string; password: string }) => {
+    const response = await loginAsync(name, password);
+    return response?.data;
+  }
+);
 
 export const userSlice = createSlice({
   name: "user",
@@ -13,17 +24,14 @@ export const userSlice = createSlice({
     isLoggedIn: false,
     openLoginDialog: false,
     user: null,
+    isAdmin: false,
   } as UserState,
   reducers: {
-    login: (state, action) => {
-      state.isLoggedIn = true;
-      state.user = action.payload;
-      state.openLoginDialog = false;
-    },
     logout: (state) => {
       state.isLoggedIn = false;
       state.user = null;
       state.openLoginDialog = false;
+      state.isAdmin = false;
     },
     setOpenLoginDialog: (state, action) => {
       state.openLoginDialog = action.payload;
@@ -34,15 +42,25 @@ export const userSlice = createSlice({
       }
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(loginThunk.fulfilled, (state, action) => {
+      state.isLoggedIn = true;
+      state.user = action.payload || null;
+      state.isAdmin = action.payload?.isAdmin ?? false;
+      state.openLoginDialog = false;
+    });
+  },
 });
 
-export const { login, logout, setOpenLoginDialog, checkAuthAndPromptLogin } =
+export const { logout, setOpenLoginDialog, checkAuthAndPromptLogin } =
   userSlice.actions;
 
 export const selectIsLoggedIn = (state: { user: UserState }) =>
   state.user.isLoggedIn;
 export const selectOpenLoginDialog = (state: { user: UserState }) =>
   state.user.openLoginDialog;
-export const selectUser = (state: { user: UserState }) => state.user.user;
+export const selectUser = (state: { user: UserState }) => {
+  return state.user;
+};
 
 export default userSlice.reducer;

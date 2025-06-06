@@ -8,4 +8,9 @@ export interface User {
 export interface LoginResponse {
   id: string;
   isAdmin: boolean;
+  data: {
+    id: string;
+    isAdmin: boolean;
+    coinAmount: number;
+  };
 }

@@ -2,8 +2,15 @@ import { RouterUrlEnum } from "@/types/enums/RouterUrlEnum";
 import { Link } from "react-router";
 import { ModeToggle } from "./ModeToggle";
 import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/store/userSlice";
+
 
 export const Header = () => {
+  const userCoins = useSelector(selectUser).user?.data.coinAmount;
+  console.log(userCoins);
+
   return (
     <>
       <nav className="border-b px-4 py-3">
@@ -15,7 +22,7 @@ export const Header = () => {
           </div>
           <div className="flex items-center space-x-2">
             <Badge variant={"outline"} className=" py-1 bg-background">
-              432 <img src="/src/assets/Tarnowiak.svg" alt="" />
+              {userCoins || 0} <img src="/src/assets/Tarnowiak.svg" alt="" />
             </Badge>
             <ModeToggle />
           </div>

@@ -2,8 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { login } from "@/store/userSlice";
-import { useDispatch } from "react-redux";
+import { loginThunk } from "@/store/userSlice";
+import { useAppDispatch } from "@/store/hooks";
 import { useState } from "react";
 
 interface LoginDialogProps {
@@ -15,7 +15,7 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
   open,
   onOpenChange,
 }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [formData, setFormData] = useState({
     name: "",
     password: "",
@@ -25,13 +25,11 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({
     e.preventDefault();
 
     const userData = {
-      id: "1",
       name: formData.name,
       password: formData.password,
-      coinAmount: 432,
     };
 
-    dispatch(login(userData));
+    dispatch(loginThunk(userData));
     setFormData({ name: "", password: "" });
   };
 
