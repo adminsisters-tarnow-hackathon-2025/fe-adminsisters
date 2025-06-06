@@ -1,5 +1,6 @@
 import { getLocationsWithEventsAsync } from "@/api/locations";
 import { LocationWithEvents } from "@/api/locations/types";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -10,14 +11,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useTheme } from "@/hooks/useTheme";
-import L from "leaflet";
+import L, { Icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { Clock, MapPin } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import { useNavigate } from "react-router";
 
 // Fix for default markers in Leaflet with Webpack
-delete (L.Icon.Default.prototype as any)._getIconUrl;
+delete (Icon.Default.prototype as unknown as { _getIconUrl: unknown })
+  ._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
@@ -26,6 +29,17 @@ L.Icon.Default.mergeOptions({
   shadowUrl:
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
 });
+
+const formatPolishDateTime = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleString("pl-PL", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
 
 function DraggableMarker({
   location,
@@ -60,33 +74,59 @@ function DraggableMarker({
       position={[location.latitude, location.longitude]}
       ref={markerRef}
     >
-      <Popup minWidth={250}>
-        <div className="space-y-2">
-          <div>
-            <strong className="text-lg">{location.name}</strong>
-          </div>
-          <div>
-            <span className="font-medium">Adres:</span> {location.address}
-          </div>
-
+      <Popup minWidth={280} className="leaflet-popup-card">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base flex items-center gap-2">
+              <MapPin className="size-4 text-primary" />
+              {location.name}
+            </CardTitle>
+            <CardDescription className="text-sm">
+              {location.address}
+            </CardDescription>
+          </CardHeader>
           {location.events && location.events.length > 0 && (
-            <div className="pt-2 border-t">
-              <span className="font-medium">Wydarzenia w tej lokalizacji:</span>
-              <div className="mt-1 space-y-1">
-                {location.events.map((event) => (
-                  <div key={event.id}>
-                    <button
-                      onClick={() => navigate(`/events/${event.id}`)}
-                      className="text-blue-600 hover:text-blue-800 hover:underline text-sm cursor-pointer"
+            <CardContent>
+              <div className="space-y-2">
+                <p className="text-sm font-medium py-0 ">
+                  Wydarzenia w tej lokalizacji:
+                </p>
+                <div className="space-y-3">
+                  {location.events.map((event) => (
+                    <div
+                      key={event.id}
+                      className="border rounded-md p-2 space-y-2"
                     >
-                      {event.name}
-                    </button>
-                  </div>
-                ))}
+                      <Button
+                        variant="link"
+                        size="sm"
+                        onClick={() => navigate(`/events/${event.id}`)}
+                        className="h-auto p-0 text-blue-600 hover:text-blue-800 text-sm justify-start font-medium"
+                      >
+                        {event.name}
+                      </Button>
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <Clock className="size-3" />
+                        <div className="flex flex-col">
+                          {event.dateFrom && (
+                            <span>
+                              od: {formatPolishDateTime(event.dateFrom)}
+                            </span>
+                          )}
+                          {event.dateTo && (
+                            <span>
+                              do: {formatPolishDateTime(event.dateTo)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            </CardContent>
           )}
-        </div>
+        </Card>
       </Popup>
     </Marker>
   );

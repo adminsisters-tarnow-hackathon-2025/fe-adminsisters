@@ -31,20 +31,6 @@ export const Footer = () => {
     <>
       <nav className="border-b py-2 px-4 border-t">
         <div className="flex items-center justify-around px-4">
-          {/* <div
-            className={`rounded-full flex flex-col items-center p-2 w-full  ${
-              isActive("/bilety") ? "bg-muted" : ""
-            }`}
-          >
-            <Map
-              fill={`${
-                isActive(RouterUrlEnum.MAP)
-                  ? "var(--color-secondary-foreground)"
-                  : "none"
-              }`}
-            />
-            <p>Mapa</p>
-          </div> */}
           <Link
             to={RouterUrlEnum.MAP}
             className="rounded-full flex flex-col items-center p-2 w-full"

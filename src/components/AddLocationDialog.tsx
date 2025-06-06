@@ -65,7 +65,7 @@ function MapClickHandler({
   onMapClick: (latlng: [number, number]) => void;
 }) {
   useMapEvents({
-    click(e) {
+    click(e: L.LeafletMouseEvent) {
       onMapClick([e.latlng.lat, e.latlng.lng]);
     },
   });

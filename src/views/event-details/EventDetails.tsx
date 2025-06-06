@@ -16,11 +16,12 @@ import { useEffect, useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { useTheme } from "@/hooks/useTheme";
-import L from "leaflet";
+import L, { Icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 // Fix for default markers in Leaflet with Webpack
-delete (L.Icon.Default.prototype as any)._getIconUrl;
+delete (Icon.Default.prototype as unknown as { _getIconUrl: unknown })
+  ._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
