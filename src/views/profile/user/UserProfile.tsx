@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AchievementCard } from "../components/AchievementCard";
+import { TarnowiakCard } from "@/components/TarnowiakCard";
 
 export const UserProfile = () => {
   const achievements = [
@@ -36,6 +37,38 @@ export const UserProfile = () => {
     },
   ];
 
+  const TarnowiakRedems = [
+    {
+      id: "1",
+      title: "Bilet jednorazowy",
+      description:
+        "Ważny na jednej linii lub 30-minutowy ważny na różnych liniach",
+      badgeImage: "/src/assets/image 4.svg",
+      points: 20,
+    },
+    {
+      id: "2",
+      title: "Karnet 5-przejazdowy",
+      description: "Ważny na jednej linii.",
+      badgeImage: "/src/assets/image 4.svg",
+      points: 50,
+    },
+    {
+      id: "3",
+      title: "Doładowanie TKM (5 zł)",
+      description: "Dodaj 5 zł na konto Tarnowskiej Karty Miejskiej.",
+      badgeImage: "/src/assets/image 5.png",
+      points: 50,
+    },
+    {
+      id: "4",
+      title: "Doładowanie TKM (10 zł)",
+      description: "Dodaj 10 zł na konto Tarnowskiej Karty Miejskiej.",
+      badgeImage: "/src/assets/image 5.png",
+      points: 50,
+    },
+  ];
+
   return (
     <Tabs defaultValue="points" className="w-full">
       <TabsList className="grid w-full grid-cols-2">
@@ -61,7 +94,11 @@ export const UserProfile = () => {
             <CardTitle>Settings</CardTitle>
             <CardDescription>Adjust your account settings.</CardDescription>
           </CardHeader>
-          <CardContent>{/* Settings content goes here */}</CardContent>
+          <CardContent className="space-y-4">
+            {TarnowiakRedems.map((redem) => (
+              <TarnowiakCard key={redem.id} redem={redem} />
+            ))}
+          </CardContent>
         </Card>
       </TabsContent>
     </Tabs>

@@ -65,6 +65,13 @@ export const Footer = () => {
           <Link
             to={RouterUrlEnum.PROFILE}
             className="rounded-full flex flex-col items-center p-2 w-full"
+            onClick={(e) => {
+              if (!isLoggedIn) {
+                e.preventDefault();
+                dispatch(checkAuthAndPromptLogin());
+                return;
+              }
+            }}
           >
             <User
               fill={`${
