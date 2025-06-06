@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { fromAddress, OutputFormat, setDefaults } from "react-geocode";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Input } from "./ui/input";
@@ -30,6 +29,12 @@ const formSchema = z.object({
   }),
   address: z.string().min(1, {
     message: "Adres jest wymagany.",
+  }),
+  latitude: z.coerce.number().min(-90).max(90, {
+    message: "Szerokość geograficzna musi być między -90 a 90.",
+  }),
+  longitude: z.coerce.number().min(-180).max(180, {
+    message: "Długość geograficzna musi być między -180 a 180.",
   }),
 });
 
@@ -43,32 +48,18 @@ export const AddLocationDialog = ({
   onLocationAdded,
 }: AddLocationDialogProps) => {
   const [open, setOpen] = useState(false);
-  const [, setCoordinates] = useState<{
-    longitude: number;
-    latitude: number;
-  }>({
-    longitude: 0,
-    latitude: 0,
-  });
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       address: "",
+      latitude: 0,
+      longitude: 0,
     },
   });
 
   const { isSubmitting } = form.formState;
-
-  useState(() => {
-    setDefaults({
-      key: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-      language: "pl",
-      region: "pl",
-      outputFormat: OutputFormat.JSON,
-    });
-  });
 
   const handleCreateLocation = async (data: CreateLocation) => {
     await createLocationAsync(data);
@@ -76,21 +67,11 @@ export const AddLocationDialog = ({
 
   const onSubmit = async (values: FormData) => {
     try {
-      const response = await fromAddress(values.address);
-      const { lat, lng } = response.results[0].geometry.location;
-      console.log(lat, lng);
-
-      const newCoordinates = {
-        longitude: lng,
-        latitude: lat,
-      };
-      setCoordinates(newCoordinates);
-
       const createLocationData: CreateLocation = {
         name: values.name,
         address: values.address,
-        longitude: newCoordinates.longitude,
-        latitude: newCoordinates.latitude,
+        longitude: values.longitude,
+        latitude: values.latitude,
       };
 
       await handleCreateLocation(createLocationData);
@@ -150,6 +131,44 @@ export const AddLocationDialog = ({
                 </FormItem>
               )}
             />
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="latitude"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Szerokość geograficzna</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        step="any"
+                        placeholder="50.0647"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="longitude"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Długość geograficzna</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        step="any"
+                        placeholder="19.9450"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? "Tworzenie..." : "Utwórz lokalizację"}
             </Button>

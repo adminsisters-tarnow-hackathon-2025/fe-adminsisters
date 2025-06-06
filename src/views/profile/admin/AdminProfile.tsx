@@ -7,7 +7,6 @@ import { AddLocationDialog } from "@/components/AddLocationDialog";
 import { LocationsTable } from "@/components/LocationsTable";
 import { EventsTable } from "@/components/EventsTable";
 import { SkeletonTable } from "@/components/table/skeleton-table";
-import { Map } from "@/views/map/Map";
 import {
   Card,
   CardContent,
@@ -55,10 +54,9 @@ export const AdminProfile = () => {
 
   return (
     <Tabs defaultValue="locations" className="w-full">
-      <TabsList className="grid w-full grid-cols-3">
+      <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="locations">Lokalizacje</TabsTrigger>
         <TabsTrigger value="events">Eventy</TabsTrigger>
-        <TabsTrigger value="map">Mapa</TabsTrigger>
       </TabsList>
       <TabsContent value="locations">
         <Card className="w-full">
@@ -97,9 +95,6 @@ export const AdminProfile = () => {
             )}
           </CardContent>
         </Card>
-      </TabsContent>
-      <TabsContent value="map">
-        <Map locations={locations} />
       </TabsContent>
     </Tabs>
   );

@@ -1,6 +1,5 @@
 import { getEventByIdAsync } from "@/api/events";
 import { Event } from "@/api/events/types";
-import { EventMapComponent } from "@/components/EventMapComponent";
 import { EventStatusBadge } from "@/components/EventStatusBadge";
 import { Button } from "@/components/ui/button";
 import {
@@ -186,8 +185,8 @@ export const EventDetails = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="h-64">
-            <EventMapComponent events={[event]} showSingleEvent={true} />
+          <div className="text-muted-foreground">
+            Adres: {event.location.address}
           </div>
         </CardContent>
       </Card>

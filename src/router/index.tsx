@@ -3,9 +3,9 @@ import { RouterUrlEnum } from "@/types/enums/RouterUrlEnum";
 import { CodeScanning } from "@/views/code-scanning/CodeScanning";
 import { EventDetails } from "@/views/event-details/EventDetails";
 import Home from "@/views/home/Home";
-import { Map } from "@/views/map/Map";
 import NotFound from "@/views/not-found/NotFound";
 import { Profile } from "@/views/profile/Profile";
+import { SimpleMap } from "@/views/map/SimpleMap";
 import { createBrowserRouter, RouterProvider } from "react-router";
 
 const router = createBrowserRouter([
@@ -18,10 +18,6 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: RouterUrlEnum.MAP,
-        element: <Map />,
-      },
-      {
         path: RouterUrlEnum.PROFILE,
         element: <Profile />,
       },
@@ -32,6 +28,10 @@ const router = createBrowserRouter([
       {
         path: "events/:id",
         element: <EventDetails />,
+      },
+      {
+        path: RouterUrlEnum.MAP,
+        element: <SimpleMap />,
       },
     ],
   },
